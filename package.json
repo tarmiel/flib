@@ -16,6 +16,7 @@
   "engines": {
     "node": ">=18"
   },
+  "contributors": ["Oleg Verhushka"],
   "packageManager": "npm@10.9.2",
   "workspaces": [
     "apps/*",
