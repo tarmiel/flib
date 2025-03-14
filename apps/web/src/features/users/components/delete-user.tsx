@@ -4,9 +4,10 @@ import { useNotifications } from '@/components/ui/notifications';
 import { useUser } from '@/lib/auth';
 
 import { useDeleteUser } from '../api/delete-user';
+import type { User } from '@/types/api';
 
 type DeleteUserProps = {
-  id: string;
+  id: User['id'];
 };
 
 export const DeleteUser = ({ id }: DeleteUserProps) => {

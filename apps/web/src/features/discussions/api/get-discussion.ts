@@ -7,12 +7,12 @@ import { Discussion } from '@/types/api';
 export const getDiscussion = ({
   discussionId,
 }: {
-  discussionId: string;
+  discussionId: Discussion['id'];
 }): Promise<{ data: Discussion }> => {
   return api.get(`/discussions/${discussionId}`);
 };
 
-export const getDiscussionQueryOptions = (discussionId: string) => {
+export const getDiscussionQueryOptions = (discussionId: Discussion['id']) => {
   return queryOptions({
     queryKey: ['discussions', discussionId],
     queryFn: () => getDiscussion({ discussionId }),
@@ -20,7 +20,7 @@ export const getDiscussionQueryOptions = (discussionId: string) => {
 };
 
 type UseDiscussionOptions = {
-  discussionId: string;
+  discussionId: Discussion['id'];
   queryConfig?: QueryConfig<typeof getDiscussionQueryOptions>;
 };
 

@@ -61,6 +61,10 @@ export const createAppRouter = (queryClient: QueryClient) =>
           path: APP_PATH.app.dashboard.path,
           lazy: () => import('./routes/app/dashboard').then(convert(queryClient)),
         },
+        {
+          path: APP_PATH.app.browse.path,
+          lazy: () => import('./routes/app/browse').then(convert(queryClient)),
+        },
       ],
     },
     {

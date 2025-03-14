@@ -4,9 +4,10 @@ import { api } from '@/lib/api-client';
 import { MutationConfig } from '@/lib/react-query';
 
 import { getUsersQueryOptions } from './get-users';
+import type { User } from '@/types/api';
 
 export type DeleteUserDTO = {
-  userId: string;
+  userId: User['id'];
 };
 
 export const deleteUser = ({ userId }: DeleteUserDTO) => {

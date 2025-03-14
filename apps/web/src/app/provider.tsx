@@ -30,7 +30,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         </div>
       }
     >
-      <ErrorBoundary FallbackComponent={MainErrorFallback}>
+      <ErrorBoundary
+        FallbackComponent={MainErrorFallback}
+        onError={(error) => console.log('Custom error', error)}
+      >
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
             {import.meta.env.DEV && <ReactQueryDevtools />}

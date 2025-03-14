@@ -2,13 +2,13 @@ import { infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
 import { QueryConfig } from '@/lib/react-query';
-import { Comment, Meta } from '@/types/api';
+import { Comment, Meta, type Discussion } from '@/types/api';
 
 export const getComments = ({
   discussionId,
   page = 1,
 }: {
-  discussionId: string;
+  discussionId: Discussion['id'];
   page?: number;
 }): Promise<{ data: Comment[]; meta: Meta }> => {
   return api.get(`/comments`, {
@@ -19,7 +19,7 @@ export const getComments = ({
   });
 };
 
-export const getInfiniteCommentsQueryOptions = (discussionId: string) => {
+export const getInfiniteCommentsQueryOptions = (discussionId: Discussion['id']) => {
   return infiniteQueryOptions({
     queryKey: ['comments', discussionId],
     queryFn: ({ pageParam = 1 }) => {

@@ -1,16 +1,19 @@
-import { Outlet } from 'react-router';
+import { Outlet, useRouteError } from 'react-router';
 
-import { DashboardLayout } from '@/components/layouts';
+import { MainLayout } from '@/components/layouts';
 
 export const ErrorBoundary = () => {
-  return <div>Something went wrong!</div>;
+  const error = useRouteError();
+  console.dir('Route error:', error);
+
+  return <div>Something went wrong</div>;
 };
 
 const AppRoot = () => {
   return (
-    <DashboardLayout>
+    <MainLayout>
       <Outlet />
-    </DashboardLayout>
+    </MainLayout>
   );
 };
 

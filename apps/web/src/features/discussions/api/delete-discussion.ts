@@ -4,8 +4,9 @@ import { api } from '@/lib/api-client';
 import { MutationConfig } from '@/lib/react-query';
 
 import { getDiscussionsQueryOptions } from './get-discussions';
+import type { Discussion } from '@/types/api';
 
-export const deleteDiscussion = ({ discussionId }: { discussionId: string }) => {
+export const deleteDiscussion = ({ discussionId }: { discussionId: Discussion['id'] }) => {
   return api.delete(`/discussions/${discussionId}`);
 };
 

@@ -10,16 +10,16 @@ type Option = {
   value: string | number | string[];
 };
 
-type SelectFieldProps = FieldWrapperPassThroughProps & {
-  options: Option[];
-  className?: string;
-  defaultValue?: string;
-  registration: Partial<UseFormRegisterReturn>;
-};
+type SelectFieldProps = FieldWrapperPassThroughProps &
+  React.ComponentPropsWithoutRef<'select'> & {
+    options: Option[];
+    className?: string;
+    defaultValue?: string;
+    registration: Partial<UseFormRegisterReturn>;
+  };
 
 export const Select = (props: SelectFieldProps) => {
-  const { label, options, error, className, defaultValue, registration } =
-    props;
+  const { label, options, error, className, defaultValue, registration, ...rest } = props;
   return (
     <FieldWrapper label={label} error={error}>
       <select
@@ -28,6 +28,7 @@ export const Select = (props: SelectFieldProps) => {
           className,
         )}
         defaultValue={defaultValue}
+        {...rest}
         {...registration}
       >
         {options.map(({ label, value }) => (

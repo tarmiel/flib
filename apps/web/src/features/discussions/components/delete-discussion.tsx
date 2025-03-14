@@ -6,9 +6,10 @@ import { useNotifications } from '@/components/ui/notifications';
 import { Authorization, ROLES } from '@/lib/authorization';
 
 import { useDeleteDiscussion } from '../api/delete-discussion';
+import type { Discussion } from '@/types/api';
 
 type DeleteDiscussionProps = {
-  id: string;
+  id: Discussion['id'];
 };
 
 export const DeleteDiscussion = ({ id }: DeleteDiscussionProps) => {
@@ -40,9 +41,7 @@ export const DeleteDiscussion = ({ id }: DeleteDiscussionProps) => {
             isLoading={deleteDiscussionMutation.isPending}
             type="button"
             variant="destructive"
-            onClick={() =>
-              deleteDiscussionMutation.mutate({ discussionId: id })
-            }
+            onClick={() => deleteDiscussionMutation.mutate({ discussionId: id })}
           >
             Delete Discussion
           </Button>

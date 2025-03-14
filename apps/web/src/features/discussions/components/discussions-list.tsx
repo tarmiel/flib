@@ -11,9 +11,10 @@ import { getDiscussionQueryOptions } from '../api/get-discussion';
 import { useDiscussions } from '../api/get-discussions';
 
 import { DeleteDiscussion } from './delete-discussion';
+import type { Discussion } from '@/types/api';
 
 export type DiscussionsListProps = {
-  onDiscussionPrefetch?: (id: string) => void;
+  onDiscussionPrefetch?: (id: Discussion['id']) => void;
 };
 
 export const DiscussionsList = ({ onDiscussionPrefetch }: DiscussionsListProps) => {

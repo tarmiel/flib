@@ -4,13 +4,14 @@ import { api } from '@/lib/api-client';
 import { MutationConfig } from '@/lib/react-query';
 
 import { getInfiniteCommentsQueryOptions } from './get-comments';
+import type { Comment, Discussion } from '@/types/api';
 
-export const deleteComment = ({ commentId }: { commentId: string }) => {
+export const deleteComment = ({ commentId }: { commentId: Comment['id'] }) => {
   return api.delete(`/comments/${commentId}`);
 };
 
 type UseDeleteCommentOptions = {
-  discussionId: string;
+  discussionId: Discussion['id'];
   mutationConfig?: MutationConfig<typeof deleteComment>;
 };
 

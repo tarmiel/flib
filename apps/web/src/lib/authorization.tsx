@@ -1,13 +1,14 @@
 import * as React from 'react';
 
-import { Comment, User } from '@/types/api';
+import { Comment, User, type UserRole } from '@/types/api';
 
 import { useUser } from './auth';
 
-export enum ROLES {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-}
+export const ROLES = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+  EDITOR: 'EDITOR',
+} as const satisfies Record<string, UserRole>;
 
 type RoleTypes = keyof typeof ROLES;
 

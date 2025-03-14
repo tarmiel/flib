@@ -5,10 +5,11 @@ import { ConfirmationDialog } from '@/components/ui/dialog';
 import { useNotifications } from '@/components/ui/notifications';
 
 import { useDeleteComment } from '../api/delete-comment';
+import type { Comment, Discussion } from '@/types/api';
 
 type DeleteCommentProps = {
-  id: string;
-  discussionId: string;
+  id: Comment['id'];
+  discussionId: Discussion['id'];
 };
 
 export const DeleteComment = ({ id, discussionId }: DeleteCommentProps) => {
@@ -32,11 +33,7 @@ export const DeleteComment = ({ id, discussionId }: DeleteCommentProps) => {
       title="Delete Comment"
       body="Are you sure you want to delete this comment?"
       triggerButton={
-        <Button
-          variant="destructive"
-          size="sm"
-          icon={<Trash className="size-4" />}
-        >
+        <Button variant="destructive" size="sm" icon={<Trash className="size-4" />}>
           Delete Comment
         </Button>
       }

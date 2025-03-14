@@ -23,6 +23,10 @@ export const APP_PATH = {
       getHref: () => '/app',
     },
     dashboard: {
+      path: 'dashboard',
+      getHref: () => '/app/dashboard',
+    },
+    browse: {
       path: '',
       getHref: () => '/app',
     },
@@ -32,7 +36,7 @@ export const APP_PATH = {
     },
     discussion: {
       path: 'discussions/:discussionId',
-      getHref: (id: string) => `/app/discussions/${id}`,
+      getHref: (id: string | number) => `/app/discussions/${id}`,
     },
     users: {
       path: 'users',
