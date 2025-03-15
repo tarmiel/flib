@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Paginator } from '@/components/widgets/paginator';
-import { BookCard, type ViewMode } from './book-card';
+import { ResourceCard, type ViewMode } from './resource-card';
 
-// Mock data for books
-const books = [
+// Mock data for resources
+const resources = [
   {
     id: '1',
     title: 'Introduction to Algorithms',
@@ -19,7 +19,7 @@ const books = [
   },
   {
     id: '2',
-    title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
+    title: 'Clean Code: A Handresource of Agile Software Craftsmanship',
     authors: ['Robert C. Martin'],
     coverImage: '/placeholder.svg?height=400&width=300',
     category: 'Computer Science',
@@ -101,14 +101,14 @@ export function ResourcesList() {
 
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {books.map((book) => (
-            <BookCard key={book.id} book={book} viewMode={'grid'} />
+          {resources.map((resource) => (
+            <ResourceCard key={resource.id} resource={resource} viewMode={'grid'} />
           ))}
         </div>
       ) : (
         <div className="space-y-4">
-          {books.map((book) => (
-            <BookCard key={book.id} book={book} viewMode={'list'} />
+          {resources.map((resource) => (
+            <ResourceCard key={resource.id} resource={resource} viewMode={'list'} />
           ))}
         </div>
       )}

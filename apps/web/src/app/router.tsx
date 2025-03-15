@@ -42,6 +42,22 @@ export const createAppRouter = (queryClient: QueryClient) =>
       ErrorBoundary: AppRootErrorBoundary,
       children: [
         {
+          path: APP_PATH.app.profile.path,
+          lazy: () => import('./routes/app/profile').then(convert(queryClient)),
+        },
+        {
+          path: APP_PATH.app.browse.path,
+          lazy: () => import('./routes/app/browse').then(convert(queryClient)),
+        },
+        {
+          path: APP_PATH.app.dashboard.path,
+          lazy: () => import('./routes/app/dashboard').then(convert(queryClient)),
+        },
+        {
+          path: APP_PATH.app.resource.path,
+          lazy: () => import('./routes/app/resources/resource').then(convert(queryClient)),
+        },
+        {
           path: APP_PATH.app.discussions.path,
           lazy: () => import('./routes/app/discussions/discussions').then(convert(queryClient)),
         },
@@ -52,18 +68,6 @@ export const createAppRouter = (queryClient: QueryClient) =>
         {
           path: APP_PATH.app.users.path,
           lazy: () => import('./routes/app/users').then(convert(queryClient)),
-        },
-        {
-          path: APP_PATH.app.profile.path,
-          lazy: () => import('./routes/app/profile').then(convert(queryClient)),
-        },
-        {
-          path: APP_PATH.app.dashboard.path,
-          lazy: () => import('./routes/app/dashboard').then(convert(queryClient)),
-        },
-        {
-          path: APP_PATH.app.browse.path,
-          lazy: () => import('./routes/app/browse').then(convert(queryClient)),
         },
       ],
     },

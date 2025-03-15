@@ -22,13 +22,17 @@ export const APP_PATH = {
       path: '/app',
       getHref: () => '/app',
     },
-    dashboard: {
-      path: 'dashboard',
-      getHref: () => '/app/dashboard',
-    },
     browse: {
       path: '',
       getHref: () => '/app',
+    },
+    resource: {
+      path: 'resources/:resourceId',
+      getHref: (id: string | number) => `/app/resources/${id}`,
+    },
+    dashboard: {
+      path: 'dashboard',
+      getHref: () => '/app/dashboard',
     },
     discussions: {
       path: 'discussions',

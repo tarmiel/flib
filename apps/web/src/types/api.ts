@@ -51,7 +51,7 @@ export type Comment = Entity<{
   author: User;
 }>;
 
-export type Book = Entity<{
+export type Resource = Entity<{
   coverImage: string;
   title: string;
   category: string;
