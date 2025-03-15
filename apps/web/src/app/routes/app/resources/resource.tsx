@@ -65,7 +65,7 @@ const ResourceRoute = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={APP_PATH.app.browse.getHref()}>All Resources</Link>
+                  <Link to={APP_PATH.app.resources.getHref()}>All Resources</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />

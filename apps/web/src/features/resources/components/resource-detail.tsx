@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { Link } from '@/components/ui/link';
+import { FileViewer } from '@/components/widgets/FileViewer';
 
 type ResourceDetailProps = {
   resource: {
@@ -272,15 +273,11 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
             </TabsContent>
 
             <TabsContent ref={viewerTabRef} value={DetailTabs.VIEWER} className="space-y-6">
-              <div className="border rounded-lg p-8 bg-muted/50 flex flex-col items-center justify-center min-h-[500px] text-center">
-                <BookOpen className="h-16 w-16 mb-4 text-muted-foreground" />
-                <h3 className="text-xl font-medium mb-2">Online Viewer</h3>
-                <p className="text-muted-foreground mb-6 max-w-md">
-                  The online document viewer will be displayed here. You can read the full document
-                  without downloading it.
-                </p>
-                <Button>Open Viewer</Button>
-              </div>
+              <FileViewer
+                fileType="djvu"
+                fileUrl="https://djvu.js.org/assets/djvu_examples/DjVu3Spec.djvu"
+              />
+              {/* <FileViewer fileType="pdf" fileUrl="/content-sample/pdf" /> */}
             </TabsContent>
           </Tabs>
         </div>

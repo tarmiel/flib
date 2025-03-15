@@ -3,7 +3,6 @@ import { useDjvuFileViewer, type DjVuViewerConfig } from './DjvuFileViewer.servi
 import { ComponentProps } from 'react';
 
 export interface DjvuFileViewerProps extends ComponentProps<'div'> {
-  fileType: 'djvu';
   fileUrl: string;
 }
 

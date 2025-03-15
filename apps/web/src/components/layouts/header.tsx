@@ -27,7 +27,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
               <Link
-                to={APP_PATH.app.browse.getHref()}
+                to={APP_PATH.app.resources.getHref()}
                 className="flex items-center gap-2 font-semibold"
               >
                 <BookOpen className="h-5 w-5" />
@@ -36,7 +36,7 @@ export function Header() {
             </SheetContent>
           </Sheet>
           <Link
-            to={APP_PATH.app.browse.getHref()}
+            to={APP_PATH.app.resources.getHref()}
             className="flex items-center gap-2 font-semibold text-primary text-lg mx-auto md:mx-0"
           >
             <BookOpen className="size-6" />

@@ -22,7 +22,7 @@ export const APP_PATH = {
       path: '/app',
       getHref: () => '/app',
     },
-    browse: {
+    resources: {
       path: '',
       getHref: () => '/app',
     },
