@@ -9,9 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Link } from '../ui/link';
 import { APP_PATH } from '@/config/paths';
+import { Authorization } from '@/lib/authorization';
 
 export function Header() {
   return (
@@ -26,13 +27,17 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
-              <Link
-                to={APP_PATH.app.resources.getHref()}
-                className="flex items-center gap-2 font-semibold"
-              >
-                <BookOpen className="h-5 w-5" />
-                <span>LibHub</span>
-              </Link>
+              <SheetHeader>
+                <SheetTitle>
+                  <Link
+                    to={APP_PATH.app.resources.getHref()}
+                    className="flex items-center gap-2 font-semibold"
+                  >
+                    <BookOpen className="h-5 w-5" />
+                    <span>LibHub</span>
+                  </Link>
+                </SheetTitle>
+              </SheetHeader>
             </SheetContent>
           </Sheet>
           <Link
@@ -61,10 +66,17 @@ export function Header() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Link to={APP_PATH.app.root.getHref()} className="flex w-full">
-                  Saved Resources
+                <Link to={APP_PATH.app.savedResources.getHref()} className="flex w-full">
+                  Saved
                 </Link>
               </DropdownMenuItem>
+              <Authorization allowedRoles={['ADMIN', 'EDITOR']}>
+                <DropdownMenuItem>
+                  <Link to={APP_PATH.app.dashboard.root.getHref()} className="flex w-full">
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+              </Authorization>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Log out</DropdownMenuItem>
             </DropdownMenuContent>

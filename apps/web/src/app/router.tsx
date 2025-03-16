@@ -7,6 +7,10 @@ import { APP_PATH } from '@/config/paths';
 import { ProtectedRoute } from '@/lib/auth';
 
 import { default as AppRoot, ErrorBoundary as AppRootErrorBoundary } from './routes/app/root';
+import {
+  default as DashboardRoot,
+  ErrorBoundary as DashboardRootErrorBoundary,
+} from './routes/app/dashboard/root';
 
 const convert = (queryClient: QueryClient) => (m: any) => {
   const { clientLoader, clientAction, default: Component, ...rest } = m;
@@ -50,12 +54,12 @@ export const createAppRouter = (queryClient: QueryClient) =>
           lazy: () => import('./routes/app/resources/resources').then(convert(queryClient)),
         },
         {
-          path: APP_PATH.app.dashboard.path,
-          lazy: () => import('./routes/app/dashboard').then(convert(queryClient)),
-        },
-        {
           path: APP_PATH.app.resource.path,
           lazy: () => import('./routes/app/resources/resource').then(convert(queryClient)),
+        },
+        {
+          path: APP_PATH.app.savedResources.path,
+          lazy: () => import('./routes/app/resources/saved-resources').then(convert(queryClient)),
         },
         {
           path: APP_PATH.app.discussions.path,
@@ -68,6 +72,25 @@ export const createAppRouter = (queryClient: QueryClient) =>
         {
           path: APP_PATH.app.users.path,
           lazy: () => import('./routes/app/users').then(convert(queryClient)),
+        },
+      ],
+    },
+    {
+      path: APP_PATH.app.dashboard.root.path,
+      element: (
+        <ProtectedRoute>
+          <DashboardRoot />
+        </ProtectedRoute>
+      ),
+      ErrorBoundary: DashboardRootErrorBoundary,
+      children: [
+        {
+          index: true,
+          lazy: () => import('./routes/app/dashboard/stats').then(convert(queryClient)),
+        },
+        {
+          path: APP_PATH.app.dashboard.users.getHref(),
+          lazy: () => import('./routes/app/dashboard/users/page').then(convert(queryClient)),
         },
       ],
     },
