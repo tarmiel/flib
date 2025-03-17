@@ -1,4 +1,4 @@
-import { ResourceManagement } from "@/components/admin/resource-management"
+import { ResourcesTable } from '@/features/resources/components';
 
 export default function ResourcesPage() {
   return (
@@ -7,8 +7,7 @@ export default function ResourcesPage() {
         <h1 className="text-3xl font-bold tracking-tight">Resource Management</h1>
       </div>
 
-      <ResourceManagement />
+      <ResourcesTable />
     </div>
-  )
+  );
 }
-

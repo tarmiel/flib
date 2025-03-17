@@ -51,11 +51,15 @@ export type Comment = Entity<{
   author: User;
 }>;
 
+export type ResourceFileType = 'PDF' | 'DJVU';
+
 export type Resource = Entity<{
-  coverImage: string;
+  coverImage?: string;
   title: string;
   category: string;
   year: number | string;
   type: string;
   authors: string[];
+  format: ResourceFileType;
+  addedBy: string;
 }>;
