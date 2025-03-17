@@ -3,6 +3,7 @@
 // import { ResourcesOverview } from '@/components/admin/resources-overview';
 import { DashboardLayout } from '@/components/layouts';
 import { Outlet, useRouteError } from 'react-router';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 
 export const ErrorBoundary = () => {
   const error = useRouteError();
@@ -14,7 +15,9 @@ export const ErrorBoundary = () => {
 export default function DashboardRoot() {
   return (
     <DashboardLayout>
-      <Outlet />
+      <NuqsAdapter>
+        <Outlet />
+      </NuqsAdapter>
     </DashboardLayout>
   );
 }

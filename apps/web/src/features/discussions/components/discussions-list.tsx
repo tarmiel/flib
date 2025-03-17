@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router';
 
 import { Link } from '@/components/ui/link';
 import { Spinner } from '@/components/ui/spinner';
-import { Table } from '@/components/ui/table';
+import { Table } from '@/components/ui/data-table';
 import { APP_PATH } from '@/config/paths';
 import { formatDate } from '@/utils/format';
 

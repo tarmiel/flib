@@ -1,6 +1,6 @@
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 
 import { APP_PATH } from '@/config/paths';
@@ -11,6 +11,7 @@ import {
   default as DashboardRoot,
   ErrorBoundary as DashboardRootErrorBoundary,
 } from './routes/app/dashboard/root';
+import { Authorization, ROLES } from '@/lib/authorization';
 
 const convert = (queryClient: QueryClient) => (m: any) => {
   const { clientLoader, clientAction, default: Component, ...rest } = m;
@@ -79,17 +80,26 @@ export const createAppRouter = (queryClient: QueryClient) =>
       path: APP_PATH.app.dashboard.root.path,
       element: (
         <ProtectedRoute>
-          <DashboardRoot />
+          <Authorization
+            allowedRoles={[ROLES.ADMIN, ROLES.EDITOR]}
+            forbiddenFallback={<Navigate to={APP_PATH.app.root.path} replace />}
+          >
+            <DashboardRoot />
+          </Authorization>
         </ProtectedRoute>
       ),
       ErrorBoundary: DashboardRootErrorBoundary,
       children: [
         {
           index: true,
+          lazy: () => import('./routes/app/dashboard/dashboard').then(convert(queryClient)),
+        },
+        {
+          path: APP_PATH.app.dashboard.stats.path,
           lazy: () => import('./routes/app/dashboard/stats').then(convert(queryClient)),
         },
         {
-          path: APP_PATH.app.dashboard.users.getHref(),
+          path: APP_PATH.app.dashboard.users.path,
           lazy: () => import('./routes/app/dashboard/users/page').then(convert(queryClient)),
         },
       ],

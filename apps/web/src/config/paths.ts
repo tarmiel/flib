@@ -30,9 +30,9 @@ export const APP_PATH = {
       path: 'resources/:resourceId',
       getHref: (id: string | number) => `/app/resources/${id}`,
     },
-    dashboard: {
-      path: 'dashboard',
-      getHref: () => '/app/dashboard',
+    savedResources: {
+      path: 'resources/saved',
+      getHref: () => `/app/resources/saved`,
     },
     discussions: {
       path: 'discussions',
@@ -49,6 +49,32 @@ export const APP_PATH = {
     profile: {
       path: 'profile',
       getHref: () => '/app/profile',
+    },
+    dashboard: {
+      root: {
+        path: '/app/dashboard',
+        getHref: () => '/app/dashboard',
+      },
+      stats: {
+        path: 'stats',
+        getHref: () => `/app/dashboard/stats`,
+      },
+      resources: {
+        path: 'resources',
+        getHref: () => `/app/dashboard/resources`,
+      },
+      uploadResource: {
+        path: 'resources/upload',
+        getHref: () => `/app/dashboard/resources/upload`,
+      },
+      editResource: {
+        path: 'resources/:resourceId/edit',
+        getHref: (id: string | number) => `/app/dashboard/resources/${id}/edit`,
+      },
+      users: {
+        path: 'users',
+        getHref: () => `/app/dashboard/users`,
+      },
     },
   },
 } as const;

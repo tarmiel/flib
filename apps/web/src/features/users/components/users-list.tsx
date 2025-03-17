@@ -1,5 +1,5 @@
 import { Spinner } from '@/components/ui/spinner';
-import { Table } from '@/components/ui/table';
+import { Table } from '@/components/ui/data-table';
 import { formatDate } from '@/utils/format';
 
 import { useUsers } from '../api/get-users';

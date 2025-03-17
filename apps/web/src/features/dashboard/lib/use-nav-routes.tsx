@@ -17,7 +17,7 @@ export const useNavRoutes = () => {
     return [
       checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
         name: 'Dashboard',
-        path: APP_PATH.app.dashboard.root.getHref(),
+        path: APP_PATH.app.dashboard.stats.getHref(),
         Icon: BarChart3,
       },
       checkAccess({ allowedRoles: [ROLES.ADMIN, ROLES.EDITOR] }) && {
