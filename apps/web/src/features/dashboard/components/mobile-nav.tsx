@@ -35,6 +35,7 @@ export function MobileNav() {
                   <NavLink
                     key={path}
                     to={path}
+                    end
                     className={({ isActive }) =>
                       cn(
                         buttonVariants({ variant: 'ghost' }),

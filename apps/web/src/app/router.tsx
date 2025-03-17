@@ -103,6 +103,16 @@ export const createAppRouter = (queryClient: QueryClient) =>
           lazy: () => import('./routes/app/dashboard/resources/page').then(convert(queryClient)),
         },
         {
+          path: APP_PATH.app.dashboard.uploadResource.path,
+          lazy: () =>
+            import('./routes/app/dashboard/resources/uploadResource').then(convert(queryClient)),
+        },
+        {
+          path: APP_PATH.app.dashboard.editResource.path,
+          lazy: () =>
+            import('./routes/app/dashboard/resources/editResource').then(convert(queryClient)),
+        },
+        {
           path: APP_PATH.app.dashboard.users.path,
           lazy: () => import('./routes/app/dashboard/users/page').then(convert(queryClient)),
         },

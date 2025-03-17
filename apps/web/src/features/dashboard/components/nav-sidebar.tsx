@@ -38,6 +38,7 @@ export function NavSidebar() {
             <NavLink
               key={path}
               to={path}
+              end
               className={({ isActive }) =>
                 cn(
                   buttonVariants({ variant: 'ghost' }),
