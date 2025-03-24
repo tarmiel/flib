@@ -24,6 +24,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
+import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
+import { parseAsYearRange } from '@/lib/parsers';
+import { useDebouncedCallback } from '@/hooks';
 
 const categories = [
   'Computer Science',
@@ -40,29 +43,165 @@ const categories = [
 
 const resourceTypes = ['Book', 'Journal', 'Article', 'Thesis', 'Conference Paper'];
 
+const toggleArrayItem = <T,>(array: T[], item: T): T[] => {
+  return array.includes(item) ? array.filter((element) => element !== item) : [...array, item];
+};
+
+export const useSearchFilters = () => {
+  const debounceMs = 300;
+  const currentYear = new Date().getFullYear();
+
+  // Query parameters
+  const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
+
+  const [sortBy, setSortBy] = useQueryState('sort', parseAsString.withDefault('relevance'));
+
+  const [activeResourceTypes, setResourceTypes] = useQueryState(
+    'type',
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
+
+  const [activeCategories, setCategories] = useQueryState(
+    'category',
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
+
+  const [yearRange, setYearRange] = useQueryState(
+    'year',
+    parseAsYearRange.withDefault([1990, currentYear]),
+  );
+
+  const debouncedSetSearchQuery = useDebouncedCallback(
+    (value: string) => void setSearchQuery(value),
+    debounceMs,
+  );
+
+  const debouncedSetYearRange = useDebouncedCallback(
+    (values: typeof yearRange) => void setYearRange(values),
+    debounceMs,
+  );
+
+  const toggleCategory = (value: string) => {
+    void setCategories(toggleArrayItem(activeCategories, value));
+  };
+
+  const toggleResourceType = (type: (typeof activeResourceTypes)[number]) => {
+    void setResourceTypes(toggleArrayItem(activeResourceTypes, type));
+  };
+
+  const resetAllFilters = () => {
+    void setSearchQuery('');
+    void setResourceTypes([]);
+    void setCategories([]);
+    void setYearRange([1990, currentYear]);
+  };
+
+  const activeFilters = [...activeResourceTypes, ...activeCategories];
+
+  return {
+    // State
+    searchQuery,
+    sortBy,
+    activeResourceTypes,
+    activeCategories,
+    yearRange,
+    activeFilters,
+
+    // Setters
+    setSearchQuery: debouncedSetSearchQuery,
+    setSortBy,
+    setYearRange: debouncedSetYearRange,
+
+    // Actions
+    toggleCategory,
+    toggleResourceType,
+    resetAllFilters,
+  };
+};
+
 export function ResourcesSearchSection() {
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [yearRange, setYearRange] = useState([1990, new Date().getFullYear()]);
+  // const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
+  // const [sortBy, setSortBy] = useQueryState('sort', parseAsString.withDefault('relevance'));
+  // const [activeResourceTypes, setResourceType] = useQueryState(
+  //   'type',
+  //   parseAsArrayOf(parseAsString).withDefault([]),
+  // );
+  // const [activeCategories, setCategories] = useQueryState(
+  //   'category',
+  //   parseAsArrayOf(parseAsString).withDefault([]),
+  // );
+  // const [yearRange, setYearRange] = useQueryState(
+  //   'year',
+  //   parseAsYearRange.withDefault([1990, new Date().getFullYear()]),
+  // );
 
-  const addFilter = (filter: string) => {
-    if (!activeFilters.includes(filter)) {
-      setActiveFilters([...activeFilters, filter]);
-    }
-  };
+  // const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  const removeFilter = (filter: string) => {
-    setActiveFilters(activeFilters.filter((f) => f !== filter));
-  };
+  // const debouncedSetSearchQuery = useDebouncedCallback((value: string) => {
+  //   void setSearchQuery(value);
+  // }, 300);
+
+  // const debouncedSetFilterValues = useDebouncedCallback((values: typeof activeFilters) => {
+  //   void setActiveFilters(values);
+  // }, 300);
+
+  // const debouncedSetYearRange = useDebouncedCallback((values: typeof yearRange) => {
+  //   void setYearRange(values);
+  // }, 300);
+
+  // const toggleCategory = (value: string) => {
+  //   if (!activeCategories.includes(value)) {
+  //     setCategory([...activeCategories, value]);
+  //   } else {
+  //     setCategory(activeCategories.filter((c) => c !== value));
+  //   }
+  // };
+  // const toggleResourceType = (value: string) => {
+  //   if (!activeResourceTypes.includes(value)) {
+  //     setResourceType([...activeResourceTypes, value]);
+  //   } else {
+  //     setResourceType(activeResourceTypes.filter((c) => c !== value));
+  //   }
+  // };
+
+  // const addFilter = (filter: string) => {
+  //   if (!activeFilters.includes(filter)) {
+  //     debouncedSetFilterValues([...activeFilters, filter]);
+  //   }
+  // };
+
+  // const removeFilter = (filter: string) => {
+  //   debouncedSetFilterValues(activeFilters.filter((f) => f !== filter));
+  // };
+
+  const {
+    searchQuery,
+    sortBy,
+    activeResourceTypes,
+    activeCategories,
+    yearRange,
+    activeFilters,
+    setSearchQuery,
+    setSortBy,
+    setYearRange,
+    toggleCategory,
+    toggleResourceType,
+    resetAllFilters,
+  } = useSearchFilters();
 
   return (
     <div className="mb-8 space-y-4">
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search for books, journals, articles..." className="pl-10" />
+          <Input
+            placeholder="Search for books, journals, articles..."
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
         </div>
         <div className="flex gap-2">
-          <Select defaultValue="relevance">
+          <Select defaultValue="relevance" onValueChange={setSortBy}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -93,9 +232,9 @@ export function ResourcesSearchSection() {
                       <div key={type} className="flex items-center space-x-2">
                         <Checkbox
                           id={`type-${type}`}
-                          onCheckedChange={(checked) => {
-                            if (checked) addFilter(type);
-                            else removeFilter(type);
+                          checked={activeResourceTypes.includes(type) || false}
+                          onCheckedChange={() => {
+                            toggleResourceType(type);
                           }}
                         />
                         <Label htmlFor={`type-${type}`}>{type}</Label>
@@ -110,9 +249,9 @@ export function ResourcesSearchSection() {
                       <div key={category} className="flex items-center space-x-2">
                         <Checkbox
                           id={`category-${category}`}
-                          onCheckedChange={(checked) => {
-                            if (checked) addFilter(category);
-                            else removeFilter(category);
+                          checked={activeCategories.includes(category) || false}
+                          onCheckedChange={() => {
+                            toggleCategory(category);
                           }}
                         />
                         <Label htmlFor={`category-${category}`}>{category}</Label>
@@ -136,20 +275,10 @@ export function ResourcesSearchSection() {
                     </div>
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium">Availability</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="available-online" />
-                      <Label htmlFor="available-online">Available Online</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="available-physical" />
-                      <Label htmlFor="available-physical">Physical Copy Available</Label>
-                    </div>
-                  </div>
-                </div>
-                <Button className="w-full">Apply Filters</Button>
+                {/* <Button className="w-full">Apply Filters</Button> */}
+                <Button className="w-full" onClick={resetAllFilters}>
+                  Clear Filters
+                </Button>
               </div>
             </SheetContent>
           </Sheet>
@@ -160,21 +289,20 @@ export function ResourcesSearchSection() {
           {activeFilters.map((filter) => (
             <Badge key={filter} variant="secondary" className="gap-1">
               {filter}
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="icon"
                 className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => removeFilter(filter)}
               >
                 <span className="sr-only">Remove filter</span>×
-              </Button>
+              </Button> */}
             </Badge>
           ))}
           <Button
             variant="ghost"
             size="sm"
             className="h-6 text-xs"
-            onClick={() => setActiveFilters([])}
+            onClick={() => resetAllFilters()}
           >
             Clear all
           </Button>

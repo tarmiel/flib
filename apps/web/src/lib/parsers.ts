@@ -87,3 +87,11 @@ export const getFiltersStateParser = <T>(originalRow?: Row<T>['original']) => {
       ),
   });
 };
+
+export const parseAsYearRange = createParser({
+  parse: (value) => {
+    if (!value) return [1990, new Date().getFullYear()];
+    return value.split('-').map(Number);
+  },
+  serialize: (value) => value.join('-'),
+});

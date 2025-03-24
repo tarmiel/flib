@@ -1,6 +1,7 @@
 import { Outlet, useRouteError } from 'react-router';
 
 import { MainLayout } from '@/components/layouts';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 
 export const ErrorBoundary = () => {
   const error = useRouteError();
@@ -12,7 +13,9 @@ export const ErrorBoundary = () => {
 const AppRoot = () => {
   return (
     <MainLayout>
-      <Outlet />
+      <NuqsAdapter>
+        <Outlet />
+      </NuqsAdapter>
     </MainLayout>
   );
 };

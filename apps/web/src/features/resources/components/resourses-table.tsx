@@ -162,7 +162,7 @@ export function ResourcesTable() {
   const filterFields: DataTableFilterField<Resource>[] = [
     {
       id: 'title',
-      label: 'Title',
+      label: 'Titlef',
       placeholder: 'Search resources...',
     },
     {

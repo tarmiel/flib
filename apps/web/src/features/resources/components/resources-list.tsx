@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Paginator } from '@/components/widgets/paginator';
 import { ResourceCard, type ViewMode } from './resource-card';
+import { parseAsInteger, useQueryState } from 'nuqs';
+import type { Resource } from '@/types/api';
 
 // Mock data for resources
-const resources = [
+const resources: Resource[] = [
   {
     id: '1',
     title: 'Introduction to Algorithms',
@@ -16,6 +18,8 @@ const resources = [
     year: 2009,
     type: 'Book',
     createdAt: '',
+    format: 'PDF',
+    addedBy: '',
   },
   {
     id: '2',
@@ -26,6 +30,8 @@ const resources = [
     year: 2008,
     type: 'Book',
     createdAt: '',
+    format: 'PDF',
+    addedBy: '',
   },
   {
     id: '3',
@@ -36,6 +42,8 @@ const resources = [
     year: 1994,
     type: 'Book',
     createdAt: '',
+    format: 'PDF',
+    addedBy: '',
   },
   {
     id: '4',
@@ -46,6 +54,8 @@ const resources = [
     year: 2020,
     type: 'Book',
     createdAt: '',
+    format: 'PDF',
+    addedBy: '',
   },
   {
     id: '5',
@@ -56,6 +66,8 @@ const resources = [
     year: 2019,
     type: 'Book',
     createdAt: '',
+    format: 'PDF',
+    addedBy: '',
   },
   {
     id: '6',
@@ -66,12 +78,14 @@ const resources = [
     year: 2006,
     type: 'Book',
     createdAt: '',
+    format: 'PDF',
+    addedBy: '',
   },
 ];
 
 export function ResourcesList() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
 
   return (
     <div className="space-y-6">

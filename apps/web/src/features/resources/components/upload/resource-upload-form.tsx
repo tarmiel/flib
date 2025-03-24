@@ -224,14 +224,19 @@ export function ResourceUploadForm() {
               </Button>
 
               {currentStep < resourceFormSteps.length - 1 ? (
-                <Button type="button" onClick={handleNext}>
+                <Button key={'next'} type="button" onClick={handleNext}>
                   <span className={'flex items-center'}>
                     Next
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </span>
                 </Button>
               ) : (
-                <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
+                <Button
+                  key={'upload'}
+                  type="submit"
+                  disabled={isSubmitting}
+                  isLoading={isSubmitting}
+                >
                   {isSubmitting ? 'Uploading...' : 'Upload Resource'}
                 </Button>
               )}
