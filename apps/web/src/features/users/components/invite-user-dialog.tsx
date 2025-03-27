@@ -26,13 +26,13 @@ export const InviteUserDialog = ({ ...props }: InviteUserDialogProps) => {
           icon={<UserPlus className="mr-2 h-4 w-4" />}
           className={'space-x-0 h-8'}
         >
-          Invite User
+          Запросити
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Invite New User</DialogTitle>
-          <DialogDescription>Send an invitation to join the system.</DialogDescription>
+          <DialogTitle>Запросити нового користувача</DialogTitle>
+          <DialogDescription>Надішліть запрошення для приєднання до системи.</DialogDescription>
         </DialogHeader>
         <InviteUserForm
           onSubmit={(values) => {
@@ -42,10 +42,10 @@ export const InviteUserDialog = ({ ...props }: InviteUserDialogProps) => {
         >
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">Скасувати</Button>
             </DialogClose>
             <Button disabled={false} isLoading={false}>
-              Send Invitation
+              Надіслати запрошення
             </Button>
           </DialogFooter>
         </InviteUserForm>

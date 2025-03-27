@@ -5,6 +5,7 @@ import { Head } from '@/components/seo';
 import { Button } from '@/components/ui/button';
 import { APP_PATH } from '@/config/paths';
 import { useUser } from '@/lib/auth';
+import { BookOpen } from 'lucide-react';
 
 const LandingRoute = () => {
   const navigate = useNavigate();
@@ -20,14 +21,15 @@ const LandingRoute = () => {
 
   return (
     <>
-      <Head description="Welcome to bulletproof react" />
+      <Head description="Welcome to LibHub" />
       <div className="flex h-screen items-center bg-white">
         <div className="mx-auto max-w-7xl px-4 py-12 text-center sm:px-6 lg:px-8 lg:py-16">
           <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            <span className="block">Bulletproof React</span>
+            <span className="block">LibHub</span>
           </h2>
-          <img src={logo} alt="react" />
-          <p>Showcasing Best Practices For Building React Applications</p>
+          {/* <img src={logo} alt="react" /> */}{' '}
+          <BookOpen className="size-48 mx-auto" strokeWidth={0.7} />
+          <p></p>
           <div className="mt-8 flex justify-center">
             <div className="inline-flex rounded-md shadow">
               <Button
@@ -53,11 +55,7 @@ const LandingRoute = () => {
               </Button>
             </div>
             <div className="ml-3 inline-flex">
-              <a
-                href="https://github.com/alan2207/bulletproof-react"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href="#" target="_blank" rel="noreferrer">
                 <Button
                   variant="outline"
                   icon={

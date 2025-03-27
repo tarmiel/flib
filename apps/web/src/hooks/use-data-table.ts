@@ -170,8 +170,8 @@ export function useDataTable<TData>({
     'page',
     parseAsInteger.withOptions(queryStateOptions).withDefault(1),
   );
-  const [perPage, setPerPage] = useQueryState(
-    'perPage',
+  const [pageSize, setPageSize] = useQueryState(
+    'pageSize',
     parseAsInteger
       .withOptions(queryStateOptions)
       .withDefault(initialState?.pagination?.pageSize ?? 10),
@@ -207,17 +207,17 @@ export function useDataTable<TData>({
   // Paginate
   const pagination: PaginationState = {
     pageIndex: page - 1, // zero-based index -> one-based index
-    pageSize: perPage,
+    pageSize: pageSize,
   };
 
   function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
     if (typeof updaterOrValue === 'function') {
       const newPagination = updaterOrValue(pagination);
       void setPage(newPagination.pageIndex + 1);
-      void setPerPage(newPagination.pageSize);
+      void setPageSize(newPagination.pageSize);
     } else {
       void setPage(updaterOrValue.pageIndex + 1);
-      void setPerPage(updaterOrValue.pageSize);
+      void setPageSize(updaterOrValue.pageSize);
     }
   }
 

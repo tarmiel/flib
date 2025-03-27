@@ -3,22 +3,23 @@ import * as React from 'react';
 import { Comment, User, type UserRole } from '@/types/api';
 
 import { useUser } from './auth';
+import type { ValueOf } from '@/types/utils';
 
 export const ROLES = {
-  ADMIN: 'ADMIN',
-  USER: 'USER',
-  EDITOR: 'EDITOR',
+  ADMIN: 'admin',
+  USER: 'user',
+  EDITOR: 'editor',
 } as const satisfies Record<string, UserRole>;
 
-type RoleTypes = keyof typeof ROLES;
+type RoleTypes = ValueOf<typeof ROLES>;
 
 export const POLICIES = {
   'comment:delete': (user: User, comment: Comment) => {
-    if (user.role === 'ADMIN') {
+    if (user.role === ROLES.ADMIN) {
       return true;
     }
 
-    if (user.role === 'USER' && comment.author?.id === user.id) {
+    if (user.role === ROLES.USER && comment.author?.id === user.id) {
       return true;
     }
 
@@ -36,7 +37,9 @@ export const useAuthorization = () => {
   const checkAccess = React.useCallback(
     ({ allowedRoles }: { allowedRoles: RoleTypes[] }) => {
       if (allowedRoles && allowedRoles.length > 0 && user.data) {
-        return allowedRoles?.includes(user.data.role);
+        // TODO: remove lowercase
+        return allowedRoles?.includes(user.data.role.toLowerCase() as RoleTypes);
+        // return allowedRoles?.includes(user.data.role);
       }
 
       return true;

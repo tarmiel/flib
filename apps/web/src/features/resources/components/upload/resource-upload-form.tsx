@@ -1,21 +1,19 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Form } from '@/components/ui/form';
 import { Progress } from '@/components/ui/progress';
 
-import { BasicInfoForm } from './steps/basic-info-form';
-import { ResourceDetailsForm } from './steps/resource-details-form';
-import { FileUploadForm } from './steps/file-upload-form';
-import { ReviewForm } from './steps/review-form';
 import { useNavigate } from 'react-router';
-import { APP_PATH } from '@/config/paths';
+import { baseInfoKeys, resourceUploadSchema, type ResourceUploadFormData } from './schemas';
+import { AdditionalInfoForm } from './steps/additional-info-form';
+import { BaseInfoForm } from './steps/base-info-form';
+import { ResourceFileUploadForm } from './steps/resource-file-upload-form';
 
 // Define the form schema with zod
 export const resourceFormSchema = z.object({
@@ -52,11 +50,6 @@ export const resourceFormSchema = z.object({
 
   // File Upload
   file: z.instanceof(File, { message: 'Please upload a file.' }).optional(),
-  // accessLevel: z
-  //   .enum(['open', 'restricted', 'private'], {
-  //     required_error: 'Please select an access level.',
-  //   })
-  //   .default('open'),
 });
 
 // Infer the type from the schema
@@ -76,39 +69,12 @@ export function ResourceUploadForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialize the form with default values
-  const form = useForm<ResourceFormValues>({
-    resolver: zodResolver(resourceFormSchema),
-    defaultValues: {
-      title: '',
-      authors: [
-        {
-          name: '',
-        },
-      ],
-      type: undefined,
-      category: '',
-      description: '',
-      keywords: [],
-      publisher: '',
-      publishDate: '',
-      edition: '',
-      isbn: '',
-      doi: '',
-      language: 'English',
-      pages: '',
-      volume: '',
-      issue: '',
-      conference: '',
-      conferenceDate: '',
-      conferenceLocation: '',
-      university: '',
-      department: '',
-      degree: '',
-      file: undefined,
-      // accessLevel: 'open',
-    },
+  const form = useForm<ResourceUploadFormData>({
+    resolver: zodResolver(resourceUploadSchema),
     mode: 'onChange',
   });
+
+  console.log({ values: form.getValues(), errors: form.formState.errors });
 
   // Calculate progress percentage
   const progress = ((currentStep + 1) / resourceFormSteps.length) * 100;
@@ -116,8 +82,9 @@ export function ResourceUploadForm() {
   // Handle next step
   const handleNext = async () => {
     const fieldsToValidate = getFieldsToValidateForStep(currentStep);
-
     const result = await form.trigger(fieldsToValidate as any);
+    console.log({ fieldsToValidate, result });
+
     if (!result) return;
 
     if (currentStep < resourceFormSteps.length - 1) {
@@ -136,38 +103,20 @@ export function ResourceUploadForm() {
   const getFieldsToValidateForStep = (step: number) => {
     switch (step) {
       case 0: // Basic Info
-        return ['title', 'authors', 'type', 'category'];
+        return baseInfoKeys;
       case 1: // Resource Details
-        return getDetailsFieldsForType(form.getValues('type'));
+        return 'additionalInfo';
       case 2: // File Upload
-        return ['file', 'accessLevel'];
+        return 'fileName';
+      case 3: // File Upload
+        return 'previewImage';
       default:
         return [];
     }
   };
 
-  // Get details fields based on resource type
-  const getDetailsFieldsForType = (type?: string) => {
-    const commonFields = ['publisher', 'publishDate', 'language'];
-
-    switch (type) {
-      case 'book':
-        return [...commonFields, 'edition', 'isbn', 'pages'];
-      case 'journal':
-        return [...commonFields, 'volume', 'issue', 'doi'];
-      case 'article':
-        return [...commonFields, 'doi'];
-      case 'thesis':
-        return [...commonFields, 'university', 'department', 'degree'];
-      case 'conference_paper':
-        return [...commonFields, 'conference', 'conferenceDate', 'conferenceLocation'];
-      default:
-        return commonFields;
-    }
-  };
-
   // Handle form submission
-  const onSubmit = async (data: ResourceFormValues) => {
+  const onSubmit = async (data: ResourceUploadFormData) => {
     setIsSubmitting(true);
 
     try {
@@ -178,9 +127,9 @@ export function ResourceUploadForm() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // toast.success('Resource uploaded successfully');
-      navigate(APP_PATH.app.dashboard.resources.getHref());
+      // navigate(APP_PATH.app.dashboard.resources.getHref());
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Помилка при завантаженні ресурсу:', error);
       // toast.error('Failed to upload resource');
     } finally {
       setIsSubmitting(false);
@@ -193,7 +142,7 @@ export function ResourceUploadForm() {
         <Progress value={progress} className="h-2" />
         <div className="flex justify-between text-sm text-muted-foreground">
           <span>
-            Step {currentStep + 1} of {resourceFormSteps.length}
+            Крок {currentStep + 1} з {resourceFormSteps.length}
           </span>
           <span>{resourceFormSteps[currentStep]?.label}</span>
         </div>
@@ -202,13 +151,13 @@ export function ResourceUploadForm() {
       <Card className="p-6">
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {currentStep === 0 && <BasicInfoForm form={form} />}
+            {currentStep === 0 && <BaseInfoForm />}
+            {currentStep === 1 && <AdditionalInfoForm />}
+            {currentStep === 2 && <ResourceFileUploadForm />}
 
-            {currentStep === 1 && <ResourceDetailsForm form={form} />}
+            {/*
 
-            {currentStep === 2 && <FileUploadForm form={form} />}
-
-            {currentStep === 3 && <ReviewForm form={form} />}
+            {currentStep === 3 && <ReviewForm form={form} />} */}
 
             <div className="flex justify-between pt-4">
               <Button
@@ -219,14 +168,14 @@ export function ResourceUploadForm() {
               >
                 <span className={'flex items-center'}>
                   <ChevronLeft className="mr-2 h-4 w-4" />
-                  Previous
+                  Назад
                 </span>
               </Button>
 
               {currentStep < resourceFormSteps.length - 1 ? (
                 <Button key={'next'} type="button" onClick={handleNext}>
                   <span className={'flex items-center'}>
-                    Next
+                    Далі
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </span>
                 </Button>
@@ -237,7 +186,7 @@ export function ResourceUploadForm() {
                   disabled={isSubmitting}
                   isLoading={isSubmitting}
                 >
-                  {isSubmitting ? 'Uploading...' : 'Upload Resource'}
+                  {isSubmitting ? 'Завантаження...' : 'Завантажити ресурс'}
                 </Button>
               )}
             </div>
@@ -247,3 +196,344 @@ export function ResourceUploadForm() {
     </div>
   );
 }
+
+// import React, { useState } from 'react';
+// import { useForm, useFieldArray, Controller } from 'react-hook-form';
+// import { zodResolver } from '@hookform/resolvers/zod';
+// import * as z from 'zod';
+// import { Button } from '@/components/ui/button';
+// import { Input } from '@/components/ui/input';
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from '@/components/ui/select';
+// import { Label } from '@/components/ui/label';
+
+// // Enums from your document
+// const resourceTypeNames = [
+//   'Книга',
+//   'Стаття',
+//   'Методичні матеріали',
+//   'Посібник',
+//   'Конференційний матеріал',
+//   'Дисертація',
+//   'Реферат',
+//   'Звіт',
+// ] as const;
+
+// const categoryNames = [
+//   'Алгоритми',
+//   'Системне програмування',
+//   'Мережеві технології',
+//   'Бази даних',
+//   'Штучний інтелект',
+//   'Інформаційна безпека',
+//   'Вбудовані системи',
+//   'Розподілені системи',
+//   'Фізика',
+//   'Квантова фізика',
+//   'Вища математика',
+//   'Електроніка',
+//   'Радіофізика',
+//   "Комп'ютерні системи",
+// ] as const;
+
+// // Zod schemas for additional info (unchanged for brevity)
+// const bookSchema = z.object({
+//   ISBN: z.string().min(1, "ISBN обов'язковий"),
+//   publisher: z.string().min(1, "Видавництво обов'язкове"),
+//   numberOfPages: z.number().min(1, 'Кількість сторінок має бути більше 0'),
+//   language: z.string().min(1, "Мова обов'язкова"),
+//   edition: z.string().optional(),
+// });
+
+// // Add other schemas similarly...
+
+// // Base schema with publicationDate
+// const baseSchema = z.object({
+//   title: z.string().min(1, "Назва обов'язкова"),
+//   authors: z.array(z.string().min(1, 'Автор не може бути порожнім')),
+//   keywords: z.array(z.string().min(1, 'Ключове слово не може бути порожнім')),
+//   citation: z.string().min(1, "Цитата обов'язкова"),
+//   publicationDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+//     message: 'Невалідна дата публікації',
+//   }), // ISO string
+//   categoryName: z.enum(categoryNames),
+//   resourceTypeName: z.enum(resourceTypeNames),
+// });
+
+// const formSchema = z
+//   .discriminatedUnion('resourceTypeName', [
+//     baseSchema.extend({ additionalInfo: bookSchema, resourceTypeName: z.literal('Книга') }),
+//     // Add other resource types...
+//   ])
+//   .and(
+//     z.object({
+//       file: z.instanceof(File).optional(),
+//       previewImage: z.instanceof(File).optional(),
+//     }),
+//   );
+
+// type FormData = z.infer<typeof formSchema>;
+
+// const ResourceUploadForm: React.FC = () => {
+//   const [step, setStep] = useState(1);
+//   const {
+//     register,
+//     control,
+//     handleSubmit,
+//     watch,
+//     formState: { errors },
+//     setValue,
+//   } = useForm<FormData>({
+//     resolver: zodResolver(formSchema),
+//     defaultValues: {
+//       title: '',
+//       authors: [''],
+//       keywords: [''],
+//       citation: '',
+//       publicationDate: new Date().toISOString(), // Default to current date
+//       categoryName: 'Алгоритми',
+//       resourceTypeName: 'Книга',
+//       additionalInfo: {},
+//     },
+//   });
+
+//   // useFieldArray for authors
+//   const {
+//     fields: authorFields,
+//     append: appendAuthor,
+//     remove: removeAuthor,
+//   } = useFieldArray({
+//     control,
+//     name: 'authors',
+//   });
+
+//   // useFieldArray for keywords
+//   const {
+//     fields: keywordFields,
+//     append: appendKeyword,
+//     remove: removeKeyword,
+//   } = useFieldArray({
+//     control,
+//     name: 'keywords',
+//   });
+
+//   const resourceType = watch('resourceTypeName');
+
+//   const onSubmit = (data: FormData) => {
+//     console.log('Form Submitted:', data);
+//     alert('Дані успішно відправлені!');
+//   };
+
+//   const renderAdditionalInfoFields = () => {
+//     switch (resourceType) {
+//       case 'Книга':
+//         return (
+//           <>
+//             <div>
+//               <Label>ISBN</Label>
+//               <Input {...register('additionalInfo.ISBN')} />
+//               {errors.additionalInfo?.ISBN && <p>{errors.additionalInfo.ISBN.message}</p>}
+//             </div>
+//             <div>
+//               <Label>Видавництво</Label>
+//               <Input {...register('additionalInfo.publisher')} />
+//               {errors.additionalInfo?.publisher && <p>{errors.additionalInfo.publisher.message}</p>}
+//             </div>
+//             <div>
+//               <Label>Кількість сторінок</Label>
+//               <Input
+//                 type="number"
+//                 {...register('additionalInfo.numberOfPages', { valueAsNumber: true })}
+//               />
+//               {errors.additionalInfo?.numberOfPages && (
+//                 <p>{errors.additionalInfo.numberOfPages.message}</p>
+//               )}
+//             </div>
+//             <div>
+//               <Label>Мова</Label>
+//               <Input {...register('additionalInfo.language')} />
+//               {errors.additionalInfo?.language && <p>{errors.additionalInfo.language.message}</p>}
+//             </div>
+//             <div>
+//               <Label>Видання (опціонально)</Label>
+//               <Input {...register('additionalInfo.edition')} />
+//             </div>
+//           </>
+//         );
+//       // Add other cases...
+//       default:
+//         return null;
+//     }
+//   };
+
+//   return (
+//     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+//       {step === 1 && (
+//         <div>
+//           <h2>Крок 1: Основна інформація</h2>
+//           <div>
+//             <Label>Назва</Label>
+//             <Input {...register('title')} />
+//             {errors.title && <p>{errors.title.message}</p>}
+//           </div>
+//           <div>
+//             <Label>Автори</Label>
+//             {authorFields.map((field, index) => (
+//               <div key={field.id} className="flex space-x-2">
+//                 <Input {...register(`authors.${index}` as const)} defaultValue={field} />
+//                 <Button type="button" onClick={() => removeAuthor(index)}>
+//                   Видалити
+//                 </Button>
+//               </div>
+//             ))}
+//             <Button type="button" onClick={() => appendAuthor('')}>
+//               Додати автора
+//             </Button>
+//             {errors.authors && <p>{errors.authors.message}</p>}
+//           </div>
+//           <div>
+//             <Label>Ключові слова</Label>
+//             {keywordFields.map((field, index) => (
+//               <div key={field.id} className="flex space-x-2">
+//                 <Input {...register(`keywords.${index}` as const)} defaultValue={field} />
+//                 <Button type="button" onClick={() => removeKeyword(index)}>
+//                   Видалити
+//                 </Button>
+//               </div>
+//             ))}
+//             <Button type="button" onClick={() => appendKeyword('')}>
+//               Додати ключове слово
+//             </Button>
+//             {errors.keywords && <p>{errors.keywords.message}</p>}
+//           </div>
+//           <div>
+//             <Label>Цитата</Label>
+//             <Input {...register('citation')} />
+//             {errors.citation && <p>{errors.citation.message}</p>}
+//           </div>
+//           <div>
+//             <Label>Дата публікації</Label>
+//             <Input
+//               type="date"
+//               onChange={(e) => setValue('publicationDate', new Date(e.target.value).toISOString())}
+//               defaultValue={new Date(watch('publicationDate')).toISOString().split('T')[0]}
+//             />
+//             {errors.publicationDate && <p>{errors.publicationDate.message}</p>}
+//           </div>
+//           <div>
+//             <Label>Категорія</Label>
+//             <Controller
+//               name="categoryName"
+//               control={control}
+//               render={({ field }) => (
+//                 <Select onValueChange={field.onChange} value={field.value}>
+//                   <SelectTrigger>
+//                     <SelectValue placeholder="Оберіть категорію" />
+//                   </SelectTrigger>
+//                   <SelectContent>
+//                     {categoryNames.map((category) => (
+//                       <SelectItem key={category} value={category}>
+//                         {category}
+//                       </SelectItem>
+//                     ))}
+//                   </SelectContent>
+//                 </Select>
+//               )}
+//             />
+//             {errors.categoryName && <p>{errors.categoryName.message}</p>}
+//           </div>
+//           <div>
+//             <Label>Тип ресурсу</Label>
+//             <Controller
+//               name="resourceTypeName"
+//               control={control}
+//               render={({ field }) => (
+//                 <Select onValueChange={field.onChange} value={field.value}>
+//                   <SelectTrigger>
+//                     <SelectValue placeholder="Оберіть тип ресурсу" />
+//                   </SelectTrigger>
+//                   <SelectContent>
+//                     {resourceTypeNames.map((type) => (
+//                       <SelectItem key={type} value={type}>
+//                         {type}
+//                       </SelectItem>
+//                     ))}
+//                   </SelectContent>
+//                 </Select>
+//               )}
+//             />
+//             {errors.resourceTypeName && <p>{errors.resourceTypeName.message}</p>}
+//           </div>
+//           <Button type="button" onClick={() => setStep(2)}>
+//             Далі
+//           </Button>
+//         </div>
+//       )}
+
+//       {step === 2 && (
+//         <div>
+//           <h2>Крок 2: Додаткова інформація</h2>
+//           {renderAdditionalInfoFields()}
+//           <Button type="button" onClick={() => setStep(1)}>
+//             Назад
+//           </Button>
+//           <Button type="button" onClick={() => setStep(3)}>
+//             Далі
+//           </Button>
+//         </div>
+//       )}
+
+//       {step === 3 && (
+//         <div>
+//           <h2>Крок 3: Завантаження файлу</h2>
+//           <div>
+//             <Label>Файл (PDF/DJVU)</Label>
+//             <Input type="file" {...register('file')} accept=".pdf,.djvu" />
+//             {errors.file && <p>{errors.file.message}</p>}
+//           </div>
+//           <Button type="button" onClick={() => setStep(2)}>
+//             Назад
+//           </Button>
+//           <Button type="button" onClick={() => setStep(4)}>
+//             Далі
+//           </Button>
+//         </div>
+//       )}
+
+//       {step === 4 && (
+//         <div>
+//           <h2>Крок 4: Завантаження прев'ю</h2>
+//           <div>
+//             <Label>Зображення прев'ю</Label>
+//             <Input type="file" {...register('previewImage')} accept="image/*" />
+//             {errors.previewImage && <p>{errors.previewImage.message}</p>}
+//           </div>
+//           <Button type="button" onClick={() => setStep(3)}>
+//             Назад
+//           </Button>
+//           <Button type="button" onClick={() => setStep(5)}>
+//             Далі
+//           </Button>
+//         </div>
+//       )}
+
+//       {step === 5 && (
+//         <div>
+//           <h2>Крок 5: Підтвердження</h2>
+//           <pre>{JSON.stringify(watch(), null, 2)}</pre>
+//           <Button type="button" onClick={() => setStep(4)}>
+//             Назад
+//           </Button>
+//           <Button type="submit">Підтвердити</Button>
+//         </div>
+//       )}
+//     </form>
+//   );
+// };
+
+// export { ResourceUploadForm };

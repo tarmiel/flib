@@ -88,3 +88,9 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+@keyframes paging {
+  to {
+    transform: rotateY(-180deg);
+  }
+}

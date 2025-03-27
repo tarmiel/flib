@@ -1,6 +1,5 @@
 import Axios, { InternalAxiosRequestConfig } from 'axios';
 
-import { useNotifications } from '@/components/ui/notifications';
 import { env } from '@/config/env';
 import { APP_PATH } from '@/config/paths';
 import { toast } from 'sonner';
@@ -25,11 +24,6 @@ api.interceptors.response.use(
   },
   (error) => {
     const message = error.response?.data?.message || error.message;
-    // useNotifications.getState().addNotification({
-    //   type: 'error',
-    //   title: 'Error',
-    //   message,
-    // });
     toast.error('Error', {
       description: message,
     });

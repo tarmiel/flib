@@ -6,14 +6,14 @@ import { useUser } from '@/lib/auth';
 import { MutationConfig } from '@/lib/react-query';
 import type { UserRole } from '@/types/api';
 
-const userRoles = ['USER', 'EDITOR', 'ADMIN'] as const satisfies UserRole[];
+const userRoles = ['user', 'editor', 'admin'] as const satisfies UserRole[];
 
 export const updateProfileInputSchema = z.object({
   firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
   lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid email address.' }),
   additionalInfo: z.string().optional(),
-  role: z.enum(userRoles).readonly(),
+  role: z.enum(userRoles).readonly().optional(),
   avatarUrl: z.string().optional(),
 });
 

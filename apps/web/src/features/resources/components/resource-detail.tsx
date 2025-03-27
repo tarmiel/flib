@@ -10,36 +10,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 import { Link } from '@/components/ui/link';
 import { FileViewer } from '@/components/widgets/FileViewer';
+import type { Resource } from '@/types/api';
+import { ResourceTypeDetails } from './resource-additional-info';
+import { Input } from '@/components/ui/input';
 
 type ResourceDetailProps = {
-  resource: {
-    id: string;
-    title: string;
-    authors: string[];
-    coverImage: string;
-    publisher: string;
-    publishDate: string;
-    edition: string;
-    isbn: string;
-    doi: string;
-    category: string;
-    subjects: string[];
-    language: string;
-    pages: number;
-    format: string;
-    fileFormats: string[];
-    fileSize: string;
-    description: string;
-    keywords: string[];
-    citations: number;
-    available: boolean;
-    accessRestriction: string;
-    relatedResources: {
-      id: string;
-      title: string;
-      authors: string[];
-    }[];
-  };
+  resource: Resource;
 };
 
 const DetailTabs = {
@@ -70,9 +46,13 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
         <div className="md:col-span-1 space-y-6">
           <div className="relative aspect-[3/4] bg-muted rounded-lg overflow-hidden border">
             <img
-              src={resource.coverImage || '/placeholder.svg'}
+              src={resource.previewImageUrl || '/placeholder.svg'}
               alt={resource.title}
               className="object-cover h-full w-full"
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = '/placeholder.svg';
+              }}
             />
           </div>
 
@@ -82,10 +62,10 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
               icon={<BookOpen className="h-4 w-4" />}
               onClick={handleReadOnlineClick}
             >
-              Read Online
+              Переглянути Online
             </Button>
             <Button variant="outline" className="w-full" icon={<Download className="h-4 w-4" />}>
-              Download ({resource.fileSize})
+              Завантажити
             </Button>
             <Button
               variant="outline"
@@ -93,36 +73,34 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
               icon={<Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />}
               onClick={toggleSaved}
             >
-              {isSaved ? 'Saved to Library' : 'Save to Library'}
+              {isSaved ? 'Збережено в бібліотеці' : 'Зберегти до бібліотеки'}
             </Button>
             <Button variant="outline" className="w-full" icon={<Share2 className="h-4 w-4" />}>
-              Share
+              Поділитися
             </Button>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Available Formats</CardTitle>
+              <CardTitle className="text-base">Доступні формати</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {resource.fileFormats.map((format) => (
-                  <TooltipProvider key={format}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="outline" className="h-auto min-w-[50px] px-0 ">
-                          <span className={'flex flex-col items-center gap-1'}>
-                            <FileText className="h-5 w-5" />
-                            <span className={'text-xs'}>{format}</span>
-                          </span>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{format}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ))}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" className="h-auto min-w-[50px] px-0 ">
+                        <span className={'flex flex-col items-center gap-1'}>
+                          <FileText className="h-5 w-5" />
+                          <span className={'text-xs'}>{resource.fileFormat}</span>
+                        </span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{resource.fileFormat}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </CardContent>
           </Card>
@@ -133,42 +111,64 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
             <h1 className="text-3xl font-bold tracking-tight mb-2">{resource.title}</h1>
             <p className="text-xl text-muted-foreground mb-4">{resource.authors.join(', ')}</p>
             <div className="flex flex-wrap gap-2 mb-6">
-              <Badge variant="outline">{resource.category}</Badge>
-              {resource.subjects.map((subject) => (
+              <Badge variant="secondary">{resource.resourceType.name}</Badge>
+              <Badge variant="outline">{resource.category.name}</Badge>
+              {/* {resource.subjects.map((subject) => (
                 <Badge key={subject} variant="outline">
                   {subject}
                 </Badge>
-              ))}
+              ))} */}
             </div>
           </div>
 
           <Tabs defaultValue={DetailTabs.OVERVIEW} value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value={DetailTabs.OVERVIEW}>Overview</TabsTrigger>
-              <TabsTrigger value={DetailTabs.DETAILS}>Details</TabsTrigger>
+              <TabsTrigger value={DetailTabs.OVERVIEW}>Загальна інформація</TabsTrigger>
+              <TabsTrigger value={DetailTabs.DETAILS}>Деталі</TabsTrigger>
               <TabsTrigger value={DetailTabs.VIEWER}>Online Viewer</TabsTrigger>
             </TabsList>
             <TabsContent value={DetailTabs.OVERVIEW} className="space-y-6">
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">Description</h2>
-                <div className="text-sm leading-relaxed whitespace-pre-line">
-                  {resource.description}
-                </div>
-              </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Опис</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm leading-relaxed whitespace-pre-line">
+                    {resource.description}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Ключові слова</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {resource.keywords?.map((keyword) => (
+                      <Badge key={keyword} variant="secondary">
+                        {keyword}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              {resource.citation && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Для цитування</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Input
+                      readOnly
+                      value={resource.citation}
+                      className={'bg-slate-100 focus-visible:ring-0'}
+                    />
+                  </CardContent>
+                </Card>
+              )}
 
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">Keywords</h2>
-                <div className="flex flex-wrap gap-2">
-                  {resource.keywords.map((keyword) => (
-                    <Badge key={keyword} variant="secondary">
-                      {keyword}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">Related Resources</h2>
+              {/* <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Схожі ресурси</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {resource.relatedResources.map((resource) => (
                     <Card key={resource.id}>
@@ -183,93 +183,11 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
                     </Card>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </TabsContent>
 
             <TabsContent value={DetailTabs.DETAILS} className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Publication Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">Publisher</dt>
-                      <dd>{resource.publisher}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">
-                        Publication Date
-                      </dt>
-                      <dd>
-                        {new Date(resource.publishDate).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">Edition</dt>
-                      <dd>{resource.edition}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">Language</dt>
-                      <dd>{resource.language}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">Pages</dt>
-                      <dd>{resource.pages}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">Format</dt>
-                      <dd>{resource.format}</dd>
-                    </div>
-                  </dl>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Identifiers</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">ISBN</dt>
-                      <dd>{resource.isbn}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">DOI</dt>
-                      <dd className="flex items-center gap-1">
-                        {resource.doi}
-                        <Button variant="ghost" size="icon" className="h-4 w-4">
-                          <ExternalLink className="h-3 w-3" />
-                          <span className="sr-only">Open DOI</span>
-                        </Button>
-                      </dd>
-                    </div>
-                  </dl>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Citation</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-muted rounded-md text-sm font-mono">
-                      {`${resource.authors.join(', ')}. (${new Date(resource.publishDate).getFullYear()}). ${resource.title}. ${resource.publisher}. ${resource.doi}`}
-                    </div>
-                    <div className="flex justify-end">
-                      <Button variant="outline" size="sm">
-                        Copy Citation
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ResourceTypeDetails resource={resource} />
             </TabsContent>
 
             <TabsContent ref={viewerTabRef} value={DetailTabs.VIEWER} className="space-y-6">

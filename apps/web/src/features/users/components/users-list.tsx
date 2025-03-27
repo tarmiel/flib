@@ -1,5 +1,5 @@
 import { Spinner } from '@/components/ui/spinner';
-import { Table } from '@/components/ui/data-table';
+import { Table } from '@/components/ui/table';
 import { formatDate } from '@/utils/format';
 
 import { useUsers } from '../api/get-users';
@@ -21,41 +21,41 @@ export const UsersList = () => {
 
   if (!users) return null;
 
-  return (
-    <Table
-      data={users}
-      columns={[
-        {
-          title: 'First Name',
-          field: 'firstName',
-        },
-        {
-          title: 'Last Name',
-          field: 'lastName',
-        },
-        {
-          title: 'Email',
-          field: 'email',
-        },
-        {
-          title: 'Role',
-          field: 'role',
-        },
-        {
-          title: 'Created At',
-          field: 'createdAt',
-          Cell({ entry: { createdAt } }) {
-            return <span>{formatDate(createdAt)}</span>;
-          },
-        },
-        {
-          title: '',
-          field: 'id',
-          Cell({ entry: { id } }) {
-            return <DeleteUser id={id} />;
-          },
-        },
-      ]}
-    />
-  );
+  // return (
+  //   <Table
+  //     data={users}
+  //     columns={[
+  //       {
+  //         title: 'First Name',
+  //         field: 'firstName',
+  //       },
+  //       {
+  //         title: 'Last Name',
+  //         field: 'lastName',
+  //       },
+  //       {
+  //         title: 'Email',
+  //         field: 'email',
+  //       },
+  //       {
+  //         title: 'Role',
+  //         field: 'role',
+  //       },
+  //       {
+  //         title: 'Created At',
+  //         field: 'createdAt',
+  //         Cell({ entry: { createdAt } }) {
+  //           return <span>{formatDate(createdAt)}</span>;
+  //         },
+  //       },
+  //       {
+  //         title: '',
+  //         field: 'id',
+  //         Cell({ entry: { id } }) {
+  //           return <DeleteUser id={id} />;
+  //         },
+  //       },
+  //     ]}
+  //   />
+  // );
 };

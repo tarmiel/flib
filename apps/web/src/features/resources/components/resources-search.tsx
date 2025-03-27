@@ -24,24 +24,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
-import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
-import { parseAsYearRange } from '@/lib/parsers';
+import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { useDebouncedCallback } from '@/hooks';
-
-const categories = [
-  'Computer Science',
-  'Mathematics',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'Engineering',
-  'Medicine',
-  'Economics',
-  'Psychology',
-  'Literature',
-];
-
-const resourceTypes = ['Book', 'Journal', 'Article', 'Thesis', 'Conference Paper'];
+import { RESOURCE_CATEGORIES, RESOURCE_TYPES } from '../lib/resources';
 
 const toggleArrayItem = <T,>(array: T[], item: T): T[] => {
   return array.includes(item) ? array.filter((element) => element !== item) : [...array, item];
@@ -51,13 +36,15 @@ export const useSearchFilters = () => {
   const debounceMs = 300;
   const currentYear = new Date().getFullYear();
 
+  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
+
   // Query parameters
   const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
 
-  const [sortBy, setSortBy] = useQueryState('sort', parseAsString.withDefault('relevance'));
+  const [sortBy, setSortBy] = useQueryState('sort', parseAsString.withDefault('created_desc'));
 
   const [activeResourceTypes, setResourceTypes] = useQueryState(
-    'type',
+    'resourceType',
     parseAsArrayOf(parseAsString).withDefault([]),
   );
 
@@ -66,45 +53,60 @@ export const useSearchFilters = () => {
     parseAsArrayOf(parseAsString).withDefault([]),
   );
 
-  const [yearRange, setYearRange] = useQueryState(
-    'year',
-    parseAsYearRange.withDefault([1990, currentYear]),
+  const [yearFrom, setYearFrom] = useQueryState('yearFrom', parseAsInteger.withDefault(1990));
+
+  const [yearTo, setYearTo] = useQueryState(
+    'yearTo',
+    parseAsInteger.withDefault(new Date().getFullYear()),
   );
 
-  const debouncedSetSearchQuery = useDebouncedCallback(
-    (value: string) => void setSearchQuery(value),
-    debounceMs,
-  );
+  const debouncedSetSearchQuery = useDebouncedCallback((value: string) => {
+    void setSearchQuery(value);
 
-  const debouncedSetYearRange = useDebouncedCallback(
-    (values: typeof yearRange) => void setYearRange(values),
-    debounceMs,
-  );
+    setPage(1);
+  }, debounceMs);
+
+  const debouncedSetYearRange = useDebouncedCallback((values: number[]) => {
+    setYearFrom(values[0] || 1990);
+    setYearTo(values[1] || currentYear);
+
+    setPage(1);
+  }, debounceMs);
 
   const toggleCategory = (value: string) => {
     void setCategories(toggleArrayItem(activeCategories, value));
+
+    setPage(1);
   };
 
   const toggleResourceType = (type: (typeof activeResourceTypes)[number]) => {
     void setResourceTypes(toggleArrayItem(activeResourceTypes, type));
+
+    setPage(1);
   };
 
   const resetAllFilters = () => {
     void setSearchQuery('');
     void setResourceTypes([]);
     void setCategories([]);
-    void setYearRange([1990, currentYear]);
+    void setYearFrom(1990);
+    void setYearTo(currentYear);
+    void setPage(1);
   };
 
   const activeFilters = [...activeResourceTypes, ...activeCategories];
 
   return {
+    // Pagination
+    page,
+    setPage,
+
     // State
     searchQuery,
     sortBy,
     activeResourceTypes,
     activeCategories,
-    yearRange,
+    yearRange: [yearFrom, yearTo],
     activeFilters,
 
     // Setters
@@ -120,60 +122,6 @@ export const useSearchFilters = () => {
 };
 
 export function ResourcesSearchSection() {
-  // const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
-  // const [sortBy, setSortBy] = useQueryState('sort', parseAsString.withDefault('relevance'));
-  // const [activeResourceTypes, setResourceType] = useQueryState(
-  //   'type',
-  //   parseAsArrayOf(parseAsString).withDefault([]),
-  // );
-  // const [activeCategories, setCategories] = useQueryState(
-  //   'category',
-  //   parseAsArrayOf(parseAsString).withDefault([]),
-  // );
-  // const [yearRange, setYearRange] = useQueryState(
-  //   'year',
-  //   parseAsYearRange.withDefault([1990, new Date().getFullYear()]),
-  // );
-
-  // const [activeFilters, setActiveFilters] = useState<string[]>([]);
-
-  // const debouncedSetSearchQuery = useDebouncedCallback((value: string) => {
-  //   void setSearchQuery(value);
-  // }, 300);
-
-  // const debouncedSetFilterValues = useDebouncedCallback((values: typeof activeFilters) => {
-  //   void setActiveFilters(values);
-  // }, 300);
-
-  // const debouncedSetYearRange = useDebouncedCallback((values: typeof yearRange) => {
-  //   void setYearRange(values);
-  // }, 300);
-
-  // const toggleCategory = (value: string) => {
-  //   if (!activeCategories.includes(value)) {
-  //     setCategory([...activeCategories, value]);
-  //   } else {
-  //     setCategory(activeCategories.filter((c) => c !== value));
-  //   }
-  // };
-  // const toggleResourceType = (value: string) => {
-  //   if (!activeResourceTypes.includes(value)) {
-  //     setResourceType([...activeResourceTypes, value]);
-  //   } else {
-  //     setResourceType(activeResourceTypes.filter((c) => c !== value));
-  //   }
-  // };
-
-  // const addFilter = (filter: string) => {
-  //   if (!activeFilters.includes(filter)) {
-  //     debouncedSetFilterValues([...activeFilters, filter]);
-  //   }
-  // };
-
-  // const removeFilter = (filter: string) => {
-  //   debouncedSetFilterValues(activeFilters.filter((f) => f !== filter));
-  // };
-
   const {
     searchQuery,
     sortBy,
@@ -195,40 +143,42 @@ export function ResourcesSearchSection() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search for books, journals, articles..."
+            placeholder="Я шукаю..."
+            defaultValue={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
         <div className="flex gap-2">
-          <Select defaultValue="relevance" onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px]">
+          <Select defaultValue={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="relevance">Relevance</SelectItem>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="oldest">Oldest</SelectItem>
-              <SelectItem value="title-asc">Title (A-Z)</SelectItem>
-              <SelectItem value="title-desc">Title (Z-A)</SelectItem>
+              <SelectItem value="created_desc">Найновіші</SelectItem>
+              <SelectItem value="created_asc">Найстаріші</SelectItem>
+              <SelectItem value="title_asc">За назвою (від А до Я)</SelectItem>
+              <SelectItem value="title_desc">За назвою (від Я до А)</SelectItem>
             </SelectContent>
           </Select>
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" className="h-[unset]" icon={<Filter className="h-4 w-4" />}>
-                Filters
+                Фільтри
               </Button>
             </SheetTrigger>
             <SheetContent className="w-[300px] sm:w-[400px] overflow-y-auto">
               <SheetHeader>
-                <SheetTitle>Filters</SheetTitle>
-                <SheetDescription>Refine your search results with filters</SheetDescription>
+                <SheetTitle>Фільтри</SheetTitle>
+                <SheetDescription>
+                  Уточніть результати пошуку за допомогою фільтрів
+                </SheetDescription>
               </SheetHeader>
               <div className="py-6 space-y-6">
                 <div className="space-y-3">
-                  <h3 className="text-sm font-medium">Resource Type</h3>
+                  <h3 className="text-sm font-medium">Тип ресурсу</h3>
                   <div className="space-y-2">
-                    {resourceTypes.map((type) => (
+                    {RESOURCE_TYPES.map((type) => (
                       <div key={type} className="flex items-center space-x-2">
                         <Checkbox
                           id={`type-${type}`}
@@ -243,9 +193,9 @@ export function ResourcesSearchSection() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <h3 className="text-sm font-medium">Categories</h3>
+                  <h3 className="text-sm font-medium">Категорії</h3>
                   <div className="space-y-2">
-                    {categories.map((category) => (
+                    {RESOURCE_CATEGORIES.map((category) => (
                       <div key={category} className="flex items-center space-x-2">
                         <Checkbox
                           id={`category-${category}`}
@@ -260,7 +210,7 @@ export function ResourcesSearchSection() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <h3 className="text-sm font-medium">Publication Year</h3>
+                  <h3 className="text-sm font-medium">Дата публікації</h3>
                   <div className="px-2">
                     <Slider
                       defaultValue={yearRange}
@@ -277,7 +227,7 @@ export function ResourcesSearchSection() {
                 </div>
                 {/* <Button className="w-full">Apply Filters</Button> */}
                 <Button className="w-full" onClick={resetAllFilters}>
-                  Clear Filters
+                  Прибрати фільтри
                 </Button>
               </div>
             </SheetContent>
@@ -304,7 +254,7 @@ export function ResourcesSearchSection() {
             className="h-6 text-xs"
             onClick={() => resetAllFilters()}
           >
-            Clear all
+            Очистити все
           </Button>
         </div>
       )}

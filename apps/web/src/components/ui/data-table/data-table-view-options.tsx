@@ -51,7 +51,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
         >
           <span className={'flex gap-1 items-center'}>
             <Settings2 className={'size-4'} />
-            View
+            Фільтр
             <ChevronsUpDown className="size-4 ml-auto opacity-50" />
           </span>
         </Button>

@@ -5,8 +5,8 @@ export function RecentActivity() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Activity</CardTitle>
-        <CardDescription>Latest actions performed in the system</CardDescription>
+        <CardTitle>Остання активність</CardTitle>
+        <CardDescription>Останні дії, виконані в системі</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-8">
@@ -31,27 +31,27 @@ export function RecentActivity() {
 
 const recentActivities = [
   {
-    userName: 'Sarah Johnson',
+    userName: 'Олена Петренко',
     userAvatar: '',
-    action: "Uploaded a new resource: 'Machine Learning Fundamentals'",
-    time: '2 hours ago',
+    action: "Завантажила новий ресурс: 'Основи машинного навчання'",
+    time: '2 години тому',
   },
   {
-    userName: 'Michael Chen',
+    userName: 'Михайло Коваленко',
     userAvatar: '',
-    action: "Changed role from 'User' to 'Editor'",
-    time: '5 hours ago',
+    action: 'Змінив роль з «Користувача» на «Редактора»',
+    time: '5 годин тому',
   },
   {
-    userName: 'Emily Rodriguez',
+    userName: 'Емілія Савченко',
     userAvatar: '',
-    action: 'Added 3 new books to the Computer Science collection',
-    time: 'Yesterday',
+    action: 'Додала 3 нові книги до колекції комп’ютерних наук',
+    time: 'Вчора',
   },
   {
-    userName: 'Lisa Wang',
+    userName: 'Людмила Бойко',
     userAvatar: '',
-    action: 'Registered as a new editor',
-    time: '3 days ago',
+    action: 'Зареєструвалася як редактор',
+    time: '3 дні тому',
   },
 ];

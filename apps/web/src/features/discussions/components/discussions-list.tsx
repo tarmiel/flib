@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router';
 
 import { Link } from '@/components/ui/link';
 import { Spinner } from '@/components/ui/spinner';
-import { Table } from '@/components/ui/data-table';
+import { Table } from '@/components/ui/table';
 import { APP_PATH } from '@/config/paths';
 import { formatDate } from '@/utils/format';
 
@@ -38,54 +38,54 @@ export const DiscussionsList = ({ onDiscussionPrefetch }: DiscussionsListProps) 
 
   if (!discussions) return null;
 
-  return (
-    <Table
-      data={discussions}
-      columns={[
-        {
-          title: 'Title',
-          field: 'title',
-        },
-        {
-          title: 'Created At',
-          field: 'createdAt',
-          Cell({ entry: { createdAt } }) {
-            return <span>{formatDate(createdAt)}</span>;
-          },
-        },
-        {
-          title: '',
-          field: 'id',
-          Cell({ entry: { id } }) {
-            return (
-              <Link
-                onMouseEnter={() => {
-                  // Prefetch the discussion data when the user hovers over the link
-                  queryClient.prefetchQuery(getDiscussionQueryOptions(id));
-                  onDiscussionPrefetch?.(id);
-                }}
-                to={APP_PATH.app.discussion.getHref(id)}
-              >
-                View
-              </Link>
-            );
-          },
-        },
-        {
-          title: '',
-          field: 'id',
-          Cell({ entry: { id } }) {
-            return <DeleteDiscussion id={id} />;
-          },
-        },
-      ]}
-      pagination={
-        meta && {
-          totalPages: meta.totalPages,
-          currentPage: meta.page,
-          rootUrl: '',
-        }
-      }
-    />
-  );
+  // return (
+  //   <Table
+  //     data={discussions}
+  //     columns={[
+  //       {
+  //         title: 'Title',
+  //         field: 'title',
+  //       },
+  //       {
+  //         title: 'Created At',
+  //         field: 'createdAt',
+  //         Cell({ entry: { createdAt } }) {
+  //           return <span>{formatDate(createdAt)}</span>;
+  //         },
+  //       },
+  //       {
+  //         title: '',
+  //         field: 'id',
+  //         Cell({ entry: { id } }) {
+  //           return (
+  //             <Link
+  //               onMouseEnter={() => {
+  //                 // Prefetch the discussion data when the user hovers over the link
+  //                 queryClient.prefetchQuery(getDiscussionQueryOptions(id));
+  //                 onDiscussionPrefetch?.(id);
+  //               }}
+  //               to={APP_PATH.app.discussion.getHref(id)}
+  //             >
+  //               View
+  //             </Link>
+  //           );
+  //         },
+  //       },
+  //       {
+  //         title: '',
+  //         field: 'id',
+  //         Cell({ entry: { id } }) {
+  //           return <DeleteDiscussion id={id} />;
+  //         },
+  //       },
+  //     ]}
+  //     pagination={
+  //       meta && {
+  //         totalPages: meta.totalPages,
+  //         currentPage: meta.page,
+  //         rootUrl: '',
+  //       }
+  //     }
+  //   />
+  // );
 };

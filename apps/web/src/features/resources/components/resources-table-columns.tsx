@@ -56,50 +56,53 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<Resourc
     },
     {
       accessorKey: 'title',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Title" />,
-      cell: ({ row }) => <div>{row.getValue('title')}</div>,
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Назва" />,
+      cell: ({ row }) => <div className={'line-clamp-2'}>{row.getValue('title')}</div>,
       enableHiding: false,
     },
     {
       accessorKey: 'authors',
-      header: 'Authors',
+      header: 'Автори',
       cell: ({ row }) => {
         const authors = row.getValue('authors') as string[];
-        return <div>{authors.join(', ')}</div>;
+        return <div className={'line-clamp-2'}>{authors.join(', ')}</div>;
       },
       enableSorting: false,
     },
     {
       accessorKey: 'category',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
-      cell: ({ row }) => <div>{row.getValue('category')}</div>,
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Категорія" />,
+      cell: ({ row }) => <div>{row.original.category.name}</div>,
       filterFn: (row, id, value) => {
         return value === row.getValue(id);
       },
       enableSorting: false,
     },
     {
-      accessorKey: 'type',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
-      cell: ({ row }) => <div>{row.getValue('type')}</div>,
+      accessorKey: 'resourceType',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Тип" />,
+      cell: ({ row }) => <div>{row.original.resourceType.name}</div>,
       filterFn: (row, id, value) => {
         return value === row.getValue(id);
       },
       enableSorting: false,
     },
     {
-      accessorKey: 'year',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Year" />,
-      cell: ({ row }) => <div>{row.getValue('year')}</div>,
-      filterFn: (row, id, value) => {
-        return value === row.getValue(id);
-      },
-    },
-    {
-      accessorKey: 'format',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Format" />,
+      accessorKey: 'publicationDate',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Дата публікації" />,
       cell: ({ row }) => {
-        const format = row.getValue('format') as string;
+        const date = new Date(row.original.publicationDate);
+        return <div>{date.toLocaleDateString('uk-UA')}</div>;
+      },
+      filterFn: (row, id, value) => {
+        return value === row.getValue(id);
+      },
+    },
+    {
+      accessorKey: 'fileFormat',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Формат" />,
+      cell: ({ row }) => {
+        const format = row.getValue('fileFormat') as string;
         return (
           <Badge variant="outline" className="text-xs">
             {format}
@@ -109,7 +112,7 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<Resourc
     },
     {
       accessorKey: 'createdAt',
-      header: 'Date Added',
+      header: 'Дата створення',
       cell: ({ row }) => {
         const dateAdded = new Date(row.getValue('createdAt') as string);
         return <div>{dateAdded.toLocaleDateString('uk-UA')}</div>;
@@ -135,23 +138,23 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<Resourc
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>Опції</DropdownMenuLabel>
               <DropdownMenuItem>
                 <Link
                   to={APP_PATH.app.dashboard.editResource.getHref(resource.id)}
                   className={'text-inherit'}
                 >
-                  Edit resource
+                  Редагувати
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link to={APP_PATH.app.resource.getHref(resource.id)} className={'text-inherit'}>
-                  View details
+                  Переглянути
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={() => setRowAction({ row, type: 'delete' })}>
-                Delete
+                Видалити
                 <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
               </DropdownMenuItem>
             </DropdownMenuContent>

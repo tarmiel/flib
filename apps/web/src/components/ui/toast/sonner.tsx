@@ -16,7 +16,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         },
       }}
       closeButton
-      duration={Infinity}
+      duration={5000}
       richColors
       {...props}
     />

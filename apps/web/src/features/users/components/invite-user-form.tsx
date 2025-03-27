@@ -51,17 +51,17 @@ export function InviteUserForm({ children, ...props }: InviteUserFormProps) {
               name={'role'}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Role</FormLabel>
+                  <FormLabel>Роль</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
+                        <SelectValue placeholder="Оберіть роль" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value={ROLES.USER}>User</SelectItem>
-                      <SelectItem value={ROLES.EDITOR}>Editor</SelectItem>
-                      <SelectItem value={ROLES.ADMIN}>Admin</SelectItem>
+                      <SelectItem value={ROLES.USER}>Користувач</SelectItem>
+                      <SelectItem value={ROLES.EDITOR}>Редактор</SelectItem>
+                      <SelectItem value={ROLES.ADMIN}>Адміністратор</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

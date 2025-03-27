@@ -30,31 +30,31 @@ export function ResourcesOverview() {
 
 const resourceCategories = [
   {
-    name: 'Computer Science',
+    name: "Комп'ютерна інженерія",
     count: '2,845',
     percentage: 32,
     color: 'bg-blue-500',
   },
   {
-    name: 'Engineering',
+    name: "Комп'ютерні науки",
     count: '1,762',
     percentage: 20,
     color: 'bg-green-500',
   },
   {
-    name: 'Mathematics',
+    name: 'Системне програмування',
     count: '1,352',
     percentage: 15,
     color: 'bg-amber-500',
   },
   {
-    name: 'Physics',
+    name: 'Фізика',
     count: '1,204',
     percentage: 13,
     color: 'bg-purple-500',
   },
   {
-    name: 'Other',
+    name: 'Інше',
     count: '792',
     percentage: 9,
     color: 'bg-gray-500',

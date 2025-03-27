@@ -10,6 +10,8 @@ import { Spinner } from '@/components/ui/spinner';
 import { AuthLoader } from '@/lib/auth';
 import { queryConfig } from '@/lib/react-query';
 import { Toaster } from '@/components/ui/toast';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
+import { BookLoader } from '@/components/ui/loader';
 
 type AppProviderProps = {
   children: React.ReactNode;
@@ -37,18 +39,20 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       >
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
-            {import.meta.env.DEV && <ReactQueryDevtools />}
-            <Notifications />
-            <AuthLoader
-              renderLoading={() => (
-                <div className="flex h-screen w-screen items-center justify-center">
-                  <Spinner size="xl" />
-                </div>
-              )}
-            >
-              {children}
-            </AuthLoader>
-            <Toaster />
+            <NuqsAdapter>
+              {import.meta.env.DEV && <ReactQueryDevtools />}
+              <Notifications />
+              <AuthLoader
+                renderLoading={() => (
+                  <div className="flex h-screen w-screen items-center justify-center">
+                    <BookLoader />
+                  </div>
+                )}
+              >
+                {children}
+              </AuthLoader>
+              <Toaster />
+            </NuqsAdapter>
           </QueryClientProvider>
         </HelmetProvider>
       </ErrorBoundary>

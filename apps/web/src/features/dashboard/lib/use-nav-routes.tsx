@@ -16,29 +16,29 @@ export const useNavRoutes = () => {
   const navRoutes = useMemo(() => {
     return [
       checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
-        name: 'Dashboard',
+        name: 'Панель керування',
         path: APP_PATH.app.dashboard.stats.getHref(),
         Icon: BarChart3,
       },
       checkAccess({ allowedRoles: [ROLES.ADMIN, ROLES.EDITOR] }) && {
-        name: 'Upload Resource',
+        name: 'Додати ресурс',
         path: APP_PATH.app.dashboard.uploadResource.getHref(),
         Icon: FileUp,
       },
       checkAccess({ allowedRoles: [ROLES.EDITOR] }) && {
-        name: 'My Resources',
+        name: 'Мої ресурси',
         path: APP_PATH.app.dashboard.resources.getHref(),
         Icon: BookOpen,
       },
       ...(checkAccess({ allowedRoles: [ROLES.ADMIN] })
         ? [
             {
-              name: 'Resources',
+              name: 'Ресурси',
               path: APP_PATH.app.dashboard.resources.getHref(),
               Icon: BookOpen,
             },
             {
-              name: 'Users',
+              name: 'Користувачі',
               path: APP_PATH.app.dashboard.users.getHref(),
               Icon: Users,
             },

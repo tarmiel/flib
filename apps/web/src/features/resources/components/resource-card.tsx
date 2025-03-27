@@ -29,11 +29,15 @@ export const ResourceCard = ({
     return (
       <Card className={cn('overflow-hidden flex flex-col', className)}>
         <div className={'relative aspect-[1]'}>
-          <Link to={APP_PATH.app.resource.getHref(resource.id)} className="bg-muted block">
+          <Link to={APP_PATH.app.resource.getHref(resource.id)} className="bg-muted block h-full">
             <img
-              src={resource.coverImage || '/placeholder.svg'}
+              src={resource.previewImageUrl || '/placeholder.svg'}
               alt={resource.title}
               className="object-cover"
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null;
+                currentTarget.src = '/placeholder.svg';
+              }}
             />
           </Link>
           <Button
@@ -55,9 +59,9 @@ export const ResourceCard = ({
               {resource.authors.join(', ')}
             </p>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="outline">{resource.category}</Badge>
-              <Badge variant="outline">{resource.year}</Badge>
-              <Badge variant="outline">{resource.type}</Badge>
+              <Badge variant="outline">{resource.category.name}</Badge>
+              <Badge variant="outline">{new Date(resource.publicationDate).getFullYear()}</Badge>
+              <Badge variant="outline">{resource.resourceType.name}</Badge>
             </div>
           </div>
         </CardContent>
@@ -69,7 +73,7 @@ export const ResourceCard = ({
               'w-full text-secondary hover:text-secondary',
             )}
           >
-            View
+            Переглянути
           </Link>
         </CardFooter>
       </Card>
@@ -83,7 +87,7 @@ export const ResourceCard = ({
           className="relative w-full sm:w-[120px] aspect-[3/4] bg-muted block"
         >
           <img
-            src={resource.coverImage || '/placeholder.svg'}
+            src={resource.previewImageUrl || '/placeholder.svg'}
             alt={resource.title}
             className="object-cover h-full"
           />
@@ -106,9 +110,9 @@ export const ResourceCard = ({
             </div>
             <p className="text-sm text-muted-foreground">{resource.authors.join(', ')}</p>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="outline">{resource.category}</Badge>
-              <Badge variant="outline">{resource.year}</Badge>
-              <Badge variant="outline">{resource.type}</Badge>
+              <Badge variant="outline">{resource.category.name}</Badge>
+              <Badge variant="outline">{new Date(resource.publicationDate).getFullYear()}</Badge>
+              <Badge variant="outline">{resource.resourceType.name}</Badge>
             </div>
           </div>
           <div className="mt-4">
@@ -119,7 +123,7 @@ export const ResourceCard = ({
                 'sm:w-auto text-secondary hover:text-secondary',
               )}
             >
-              View
+              Переглянути
             </Link>
           </div>
         </div>

@@ -52,9 +52,13 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<User>[]
       size: 10,
     },
     {
-      accessorKey: 'lastName',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-      cell: ({ row }) => <div>{row.getValue('lastName')}</div>,
+      accessorKey: 'firstName',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Ім'я" />,
+      cell: ({ row }) => (
+        <div>
+          {row.original.firstName} {row.original.lastName}
+        </div>
+      ),
       enableHiding: false,
     },
     {
@@ -64,7 +68,7 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<User>[]
     },
     {
       accessorKey: 'role',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Role" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Роль" />,
       cell: ({ row }) => {
         const role = row.getValue('role') as string;
         return (
@@ -82,7 +86,7 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<User>[]
     },
     {
       accessorKey: 'createdAt',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Дата реєстрації" />,
       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
     },
     {
@@ -100,13 +104,13 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<User>[]
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>Опції</DropdownMenuLabel>
+              <DropdownMenuItem>Переглянути</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setRowAction({ row, type: 'update' })}>
-                Edit user
+                Редагувати
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View activity</DropdownMenuItem>
-              <DropdownMenuItem>Reset password</DropdownMenuItem>
+              <DropdownMenuItem>Скинути пароль</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );

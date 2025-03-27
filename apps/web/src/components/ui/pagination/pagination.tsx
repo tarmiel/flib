@@ -27,34 +27,65 @@ const PaginationItem = React.forwardRef<HTMLLIElement, React.ComponentProps<'li'
 );
 PaginationItem.displayName = 'PaginationItem';
 
+type AnchorPaginationLinkProps = {
+  href: string;
+  type?: never;
+} & React.ComponentProps<'a'>;
+
+// Props specific to button tag
+type ButtonPaginationLinkProps = {
+  href?: never;
+  type?: 'button' | 'submit' | 'reset';
+} & React.ComponentProps<'button'>;
+
 type PaginationLinkProps = {
   isActive?: boolean;
   disabled?: boolean;
 } & Pick<ButtonProps, 'size'> &
-  React.ComponentProps<'a'>;
+  (AnchorPaginationLinkProps | ButtonPaginationLinkProps);
 
 const PaginationLink = ({
   className,
   isActive,
   size = 'icon',
-  href,
   disabled = false,
   ...props
-}: PaginationLinkProps) => (
-  <Link
-    to={href || '#'}
-    aria-current={isActive ? 'page' : undefined}
-    className={cn(
-      buttonVariants({
-        variant: isActive ? 'outline' : 'ghost',
-        size,
-      }),
-      disabled && 'cursor-not-allowed pointer-events-none',
-      className,
-    )}
-    {...props}
-  />
-);
+}: PaginationLinkProps) => {
+  const classes = cn(
+    buttonVariants({
+      variant: isActive ? 'outline' : 'ghost',
+      size,
+    }),
+    disabled && 'cursor-not-allowed pointer-events-none',
+    className,
+  );
+
+  // Type guard to check if it's an anchor link
+  const isAnchorLink = 'href' in props;
+
+  if (isAnchorLink) {
+    const { href, ...anchorProps } = props as AnchorPaginationLinkProps;
+    return (
+      <Link
+        to={href}
+        aria-current={isActive ? 'page' : undefined}
+        className={classes}
+        {...anchorProps}
+      />
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      aria-current={isActive ? 'page' : undefined}
+      className={classes}
+      {...(props as ButtonPaginationLinkProps)}
+    />
+  );
+};
+
 PaginationLink.displayName = 'PaginationLink';
 
 const PaginationPrevious = ({
@@ -68,7 +99,7 @@ const PaginationPrevious = ({
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
-    <span className={'hidden md:inline-flex'}>Previous</span>
+    <span className={'hidden md:inline-flex'}>Назад</span>
   </PaginationLink>
 );
 PaginationPrevious.displayName = 'PaginationPrevious';
@@ -80,7 +111,7 @@ const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof Pag
     className={cn('gap-1 pr-2.5', className)}
     {...props}
   >
-    <span className={'hidden md:inline-flex'}>Next</span>
+    <span className={'hidden md:inline-flex'}>Вперед</span>
     <ChevronRight className="h-4 w-4" />
   </PaginationLink>
 );

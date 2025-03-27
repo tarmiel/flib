@@ -24,7 +24,7 @@ export const UpdateUserDialog = ({ user, ...props }: UpdateUserDialogProps) => {
       onSuccess: () => {
         addNotification({
           type: 'success',
-          title: 'Profile Updated',
+          title: 'Профіль оновлено',
         });
       },
     },
@@ -34,8 +34,8 @@ export const UpdateUserDialog = ({ user, ...props }: UpdateUserDialogProps) => {
     <Dialog {...props}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
-          <DialogDescription>Update user information and privileges.</DialogDescription>
+          <DialogTitle>Редагування користувача</DialogTitle>
+          <DialogDescription>Оновіть інформацію та права доступу користувача.</DialogDescription>
         </DialogHeader>
         <UpdateUserForm
           onSubmit={(values) => {
@@ -46,13 +46,13 @@ export const UpdateUserDialog = ({ user, ...props }: UpdateUserDialogProps) => {
         >
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">Скасувати</Button>
             </DialogClose>
             <Button
               disabled={updateProfileMutation.isPending}
               isLoading={updateProfileMutation.isPending}
             >
-              Save
+              Зберегти
             </Button>
           </DialogFooter>
 

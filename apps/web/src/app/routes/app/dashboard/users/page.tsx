@@ -1,18 +1,16 @@
 // import { DataTableSkeleton } from '@/components/ui/data-table';
 import { UsersTable } from '@/features/users/components/users-table';
-import { useSearchParams } from 'react-router';
 
 import { parseAsArrayOf, parseAsInteger, parseAsString } from 'nuqs';
 import * as z from 'zod';
 
+import { ROLES } from '@/lib/authorization';
 import { getSortingStateParser } from '@/lib/parsers';
 import type { User } from '@/types/api';
-import { ROLES } from '@/lib/authorization';
-import { useMemo } from 'react';
 
 export const searchParamsParser = {
   page: parseAsInteger.withDefault(1),
-  perPage: parseAsInteger.withDefault(10),
+  pageSize: parseAsInteger.withDefault(10),
   sort: getSortingStateParser<User>().withDefault([{ id: 'createdAt', desc: true }]),
   role: parseAsArrayOf(z.enum([ROLES.ADMIN, ROLES.EDITOR, ROLES.USER])).withDefault([]),
   lastName: parseAsString.withDefault(''),
@@ -30,7 +28,7 @@ const parseFilters = (params: URLSearchParams): UserFilters => {
   const entries = Object.fromEntries(params.entries());
   return {
     page: searchParamsParser.page.parseServerSide(entries.page),
-    perPage: searchParamsParser.perPage.parseServerSide(entries.perPage),
+    pageSize: searchParamsParser.pageSize.parseServerSide(entries.pageSize),
     sort: searchParamsParser.sort.parseServerSide(entries.sort),
     role: searchParamsParser.role.parseServerSide(entries.role),
     lastName: searchParamsParser.lastName.parseServerSide(entries.lastName),
@@ -38,15 +36,15 @@ const parseFilters = (params: URLSearchParams): UserFilters => {
 };
 
 export default function UsersPage() {
-  const [searchParams] = useSearchParams();
-  const filters = useMemo(() => parseFilters(searchParams), [searchParams]);
+  // const [searchParams] = useSearchParams();
+  // const filters = useMemo(() => parseFilters(searchParams), [searchParams]);
 
-  console.log('searchParams', filters);
+  // console.log('searchParams', filters);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Управління користувачами</h1>
       </div>
 
       {/* <DataTableSkeleton

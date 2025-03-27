@@ -4,7 +4,8 @@
 
 export type BaseEntity = {
   id: string | number;
-  createdAt: string | number;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 };
 
 export type Entity<T> = {
@@ -24,9 +25,10 @@ export type User = Entity<{
   role: UserRole;
   avatarUrl?: string;
   additionalInfo?: string;
+  isConfirmed?: boolean;
 }>;
 
-export type UserRole = 'ADMIN' | 'USER' | 'EDITOR';
+export type UserRole = 'admin' | 'user' | 'editor';
 
 export type AuthResponse = {
   jwt: string;
@@ -53,13 +55,284 @@ export type Comment = Entity<{
 
 export type ResourceFileType = 'PDF' | 'DJVU';
 
-export type Resource = Entity<{
-  coverImage?: string;
+export type BaseResource = Entity<{
   title: string;
-  category: string;
-  year: number | string;
-  type: string;
+  previewImageUrl?: string;
+  fileName: string;
+  fileFormat: ResourceFileType;
+  fileSize?: string;
+  description?: string;
+  publicationDate: Date | string;
   authors: string[];
-  format: ResourceFileType;
-  addedBy: string;
+  keywords?: string[];
+  citation?: string;
+  category: Pick<Category, 'name'>;
+  resourceType: Pick<ResourceType, 'name'>;
+  // uploadedBy: Pick<User, 'id' | 'firstName' | 'lastName' | 'email'>;
+  uploadedBy: User;
+  additionalInfo?: AdditionalInfo;
 }>;
+
+export type ResourceTypeName =
+  | 'Книга'
+  | 'Стаття'
+  | 'Методичні матеріали'
+  | 'Посібник'
+  | 'Конференційний матеріал'
+  | 'Дисертація'
+  | 'Реферат'
+  | 'Звіт';
+
+export type ResourceType = Entity<{
+  id: string;
+  name: ResourceTypeName; // ResourceTypeName
+  description?: string;
+}>;
+
+export type CategoryName =
+  | 'Алгоритми'
+  | 'Системне програмування'
+  | 'Мережеві технології'
+  | 'Бази даних'
+  | 'Штучний інтелект'
+  | 'Інформаційна безпека'
+  | 'Вбудовані системи'
+  | 'Розподілені системи'
+  | 'Фізика'
+  | 'Квантова фізика'
+  | 'Вища математика'
+  | 'Електроніка'
+  | 'Радіофізика'
+  | "Комп'ютерні системи"
+  | 'Інше';
+
+export type Category = Entity<{
+  id: string;
+  name: CategoryName; // CategoryName
+  description?: string;
+}>;
+
+export type AdditionalInfo =
+  | BookAdditionalInfo
+  | ArticleAdditionalInfo
+  | MethodicalAdditionalInfo
+  | ManualAdditionalInfo
+  | ConferenceAdditionalInfo
+  | DissertationAdditionalInfo
+  | AbstractAdditionalInfo
+  | ReportAdditionalInfo;
+
+/**
+ * Додаткова інформація для ресурсу типу "Книга".
+ */
+export interface BookAdditionalInfo {
+  /** Міжнародний стандартний номер книги (ISBN) */
+  ISBN: string;
+  /** Видавництво книги */
+  publisher: string;
+  /** Кількість сторінок */
+  numberOfPages: number;
+  /** Мова видання книги */
+  language: string;
+  /** Видання (опціонально) */
+  edition?: string;
+}
+
+/**
+ * Додаткова інформація для ресурсу типу "Стаття".
+ */
+export interface ArticleAdditionalInfo {
+  /** Назва журналу, в якому опублікована стаття */
+  journalName: string;
+  /** Том журналу (може бути числовим або текстовим) */
+  volume: string | number;
+  /** Номер випуску (issue) журналу */
+  issue: string | number;
+  /** Сторінки, на яких знаходиться стаття */
+  pages: string;
+  /** Digital Object Identifier (DOI) статті */
+  DOI: string;
+}
+
+/**
+ * Додаткова інформація для ресурсу типу "Методичні матеріали".
+ */
+export interface MethodicalAdditionalInfo {
+  /** Назва курсу, до якого стосуються матеріали */
+  courseName: string;
+  /** Предмет (опціонально) */
+  subject?: string;
+  /** Академічний рік (опціонально) */
+  academicYear?: string;
+}
+
+/**
+ * Додаткова інформація для ресурсу типу "Посібник".
+ */
+export interface ManualAdditionalInfo {
+  /** Версія посібника (опціонально) */
+  version?: string;
+  /** Видавництво посібника (опціонально) */
+  publisher?: string;
+  /** Мова посібника (опціонально) */
+  language?: string;
+}
+
+/**
+ * Додаткова інформація для ресурсу типу "Конференційний матеріал".
+ */
+export interface ConferenceAdditionalInfo {
+  /** Назва конференції */
+  conferenceName: string;
+  /** Місце проведення конференції */
+  location: string;
+  /** Дата проведення конференції */
+  conferenceDate: Date;
+}
+
+/**
+ * Додаткова інформація для ресурсу типу "Дисертація".
+ */
+export interface DissertationAdditionalInfo {
+  /** Науковий ступінь, за який подається дисертація */
+  degree: string;
+  /** Ім'я наукового керівника */
+  advisor: string;
+  /** Назва навчального закладу */
+  institution: string;
+  /** Дата захисту дисертації */
+  defenseDate: Date;
+}
+
+/**
+ * Додаткова інформація для ресурсу типу "Реферат".
+ */
+export interface AbstractAdditionalInfo {
+  /** Тема реферату */
+  topic: string;
+  /** Короткий виклад або резюме (опціонально) */
+  summary?: string;
+}
+
+/**
+ * Додаткова інформація для ресурсу типу "Звіт".
+ */
+export interface ReportAdditionalInfo {
+  /** Назва організації, що видає звіт */
+  organization: string;
+  /** Номер звіту (опціонально) */
+  reportNumber?: string;
+  /** Дата звіту */
+  reportDate: Date;
+}
+
+// ========== Iнтерфейси ресурсів ==========
+
+/**
+ * Інтерфейс ресурсу типу "Книга".
+ */
+export interface BookResource extends BaseResource {
+  /** Тип ресурсу – літеральне значення "Книга" */
+  resourceType: {
+    name: 'Книга';
+  };
+  /** Додаткова інформація для книги */
+  additionalInfo?: BookAdditionalInfo;
+}
+
+/**
+ * Інтерфейс ресурсу типу "Стаття".
+ */
+export interface ArticleResource extends BaseResource {
+  /** Тип ресурсу – літеральне значення "Стаття" */
+  resourceType: {
+    name: 'Стаття';
+  };
+  /** Додаткова інформація для статті */
+  additionalInfo?: ArticleAdditionalInfo;
+}
+
+/**
+ * Інтерфейс ресурсу типу "Методичні матеріали".
+ */
+export interface MethodicalResource extends BaseResource {
+  /** Тип ресурсу – літеральне значення "Методичні матеріали" */
+  resourceType: {
+    name: 'Методичні матеріали';
+  };
+  /** Додаткова інформація для методичних матеріалів */
+  additionalInfo?: MethodicalAdditionalInfo;
+}
+
+/**
+ * Інтерфейс ресурсу типу "Посібник".
+ */
+export interface ManualResource extends BaseResource {
+  /** Тип ресурсу – літеральне значення "Посібник" */
+  resourceType: {
+    name: 'Посібник';
+  };
+  /** Додаткова інформація для посібника */
+  additionalInfo?: ManualAdditionalInfo;
+}
+
+/**
+ * Інтерфейс ресурсу типу "Конференційний матеріал".
+ */
+export interface ConferenceResource extends BaseResource {
+  /** Тип ресурсу – літеральне значення "Конференційний матеріал" */
+  resourceType: {
+    name: 'Конференційний матеріал';
+  };
+  /** Додаткова інформація для конференційного матеріалу */
+  additionalInfo?: ConferenceAdditionalInfo;
+}
+
+/**
+ * Інтерфейс ресурсу типу "Дисертація".
+ */
+export interface DissertationResource extends BaseResource {
+  /** Тип ресурсу – літеральне значення "Дисертація" */
+  resourceType: {
+    name: 'Дисертація';
+  };
+  /** Додаткова інформація для дисертації */
+  additionalInfo?: DissertationAdditionalInfo;
+}
+
+/**
+ * Інтерфейс ресурсу типу "Реферат".
+ */
+export interface AbstractResource extends BaseResource {
+  /** Тип ресурсу – літеральне значення "Реферат" */
+  resourceType: {
+    name: 'Реферат';
+  };
+  /** Додаткова інформація для реферату */
+  additionalInfo?: AbstractAdditionalInfo;
+}
+
+/**
+ * Інтерфейс ресурсу типу "Звіт".
+ */
+export interface ReportResource extends BaseResource {
+  /** Тип ресурсу – літеральне значення "Звіт" */
+  resourceType: {
+    name: 'Звіт';
+  };
+  /** Додаткова інформація для звіту */
+  additionalInfo?: ReportAdditionalInfo;
+}
+
+/**
+ * Об'єднаний тип для всіх ресурсів.
+ */
+export type Resource =
+  | BookResource
+  | ArticleResource
+  | MethodicalResource
+  | ManualResource
+  | ConferenceResource
+  | DissertationResource
+  | AbstractResource
+  | ReportResource;

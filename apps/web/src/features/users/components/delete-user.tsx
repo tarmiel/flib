@@ -29,8 +29,8 @@ export const DeleteUser = ({ id }: DeleteUserProps) => {
   return (
     <ConfirmationDialog
       icon="danger"
-      title="Delete User"
-      body="Are you sure you want to delete this user?"
+      title="Видалити користувача"
+      body="Ви впевнені, що хочете видалити цього користувача?"
       triggerButton={<Button variant="destructive">Delete</Button>}
       confirmButton={
         <Button
@@ -39,7 +39,7 @@ export const DeleteUser = ({ id }: DeleteUserProps) => {
           variant="destructive"
           onClick={() => deleteUserMutation.mutate({ userId: id })}
         >
-          Delete User
+          Видалити користувача
         </Button>
       }
     />

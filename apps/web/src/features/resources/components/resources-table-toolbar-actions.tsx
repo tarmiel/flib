@@ -26,7 +26,7 @@ export function ResourcesTableToolbarActions({ table }: ResourcesTableToolbarAct
         to={APP_PATH.app.dashboard.uploadResource.getHref()}
         className={cn(buttonVariants(), 'hover:text-secondary h-8')}
       >
-        <Plus className="mr-2 h-4 w-4" /> Add Resource
+        <Plus className="mr-2 h-4 w-4" /> Додати
       </Link>
 
       {/**

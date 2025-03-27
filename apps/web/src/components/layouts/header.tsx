@@ -12,9 +12,11 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Link } from '../ui/link';
 import { APP_PATH } from '@/config/paths';
-import { Authorization } from '@/lib/authorization';
+import { Authorization, ROLES } from '@/lib/authorization';
+import { useLogout } from '@/lib/auth';
 
 export function Header() {
+  const logout = useLogout();
   return (
     <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
@@ -58,27 +60,27 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Мій аккаунт</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Link to={APP_PATH.app.profile.getHref()} className="flex w-full">
-                  Profile
+                  Профіль
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link to={APP_PATH.app.savedResources.getHref()} className="flex w-full">
-                  Saved
+                  Збережені
                 </Link>
               </DropdownMenuItem>
-              <Authorization allowedRoles={['ADMIN', 'EDITOR']}>
+              <Authorization allowedRoles={[ROLES.ADMIN, ROLES.EDITOR]}>
                 <DropdownMenuItem>
                   <Link to={APP_PATH.app.dashboard.root.getHref()} className="flex w-full">
-                    Dashboard
+                    Панель управління
                   </Link>
                 </DropdownMenuItem>
               </Authorization>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Log out</DropdownMenuItem>
+              <DropdownMenuItem onClick={logout.mutate}>Вийти з аккаунта</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

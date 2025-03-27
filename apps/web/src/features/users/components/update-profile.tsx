@@ -1,23 +1,20 @@
-import { Camera, Pen } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormLabel,
-  FormItem,
+  FormDescription,
   FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
   Input,
   Textarea,
-  FormDescription,
-  FormMessage,
 } from '@/components/ui/form';
-import { useNotifications } from '@/components/ui/notifications';
 import { useUser } from '@/lib/auth';
 
-import { updateProfileInputSchema, useUpdateProfile } from '../api/update-profile';
-import { useRef, useState } from 'react';
-import type { UserRole } from '@/types/api';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Card,
   CardContent,
@@ -26,7 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Select,
   SelectContent,
@@ -34,7 +30,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import type { UserRole } from '@/types/api';
 import { cn } from '@/utils';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { updateProfileInputSchema, useUpdateProfile } from '../api/update-profile';
+import { ROLES } from '@/lib/authorization';
 
 export const UpdateProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -43,14 +44,11 @@ export const UpdateProfile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const user = useUser();
-  const { addNotification } = useNotifications();
   const updateProfileMutation = useUpdateProfile({
     mutationConfig: {
       onSuccess: () => {
-        addNotification({
-          type: 'success',
-          title: 'Profile Updated',
-        });
+        toast.success('Профіль оновлено');
+
         setIsEditing(false);
       },
     },
@@ -68,19 +66,13 @@ export const UpdateProfile = () => {
 
       // Check file size (limit to 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        addNotification({
-          type: 'error',
-          title: 'Image size should be less than 5MB',
-        });
+        toast.error('Image size should be less than 5MB');
         return;
       }
 
       // Check file type
       if (!file.type.startsWith('image/')) {
-        addNotification({
-          type: 'error',
-          title: 'Please select an image file',
-        });
+        toast.error('Please select an image file');
         return;
       }
 
@@ -95,8 +87,8 @@ export const UpdateProfile = () => {
     }
   };
 
-  const isAdmin = user.data?.role === 'ADMIN';
-  const isEditor = user.data?.role === 'EDITOR' || isAdmin;
+  const isAdmin = user.data?.role === ROLES.ADMIN;
+  const isEditor = user.data?.role === ROLES.EDITOR || isAdmin;
 
   return (
     <Card>
@@ -139,11 +131,11 @@ export const UpdateProfile = () => {
             />
           </div>
           <div>
-            <CardTitle>{isEditing ? 'Edit Profile' : 'Profile Information'}</CardTitle>
+            <CardTitle>{isEditing ? 'Редагування профілю' : 'Інформація профілю'}</CardTitle>
             <CardDescription>
               {isEditing
-                ? 'Update your personal information'
-                : 'View and manage your profile details'}
+                ? 'Оновіть вашу особисту інформацію'
+                : 'Перегляньте та керуйте деталями вашого профілю'}
             </CardDescription>
           </div>
         </div>
@@ -169,15 +161,15 @@ export const UpdateProfile = () => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="First Name"
-                  placeholder={'First Name'}
+                  label="Ім'я"
+                  placeholder={"Ім'я"}
                   error={formState.errors['firstName']}
                   registration={register('firstName')}
                   disabled={!isEditing}
                 />
                 <Input
-                  label="Last Name"
-                  placeholder={'Last Name'}
+                  label="Прізвище"
+                  placeholder={'Прізвище"'}
                   error={formState.errors['lastName']}
                   registration={register('lastName')}
                   disabled={!isEditing}
@@ -194,7 +186,7 @@ export const UpdateProfile = () => {
               />
 
               <Textarea
-                label="Additional Info"
+                label="Додаткова інформація"
                 error={formState.errors['additionalInfo']}
                 registration={register('additionalInfo')}
                 disabled={!isEditing}
@@ -206,7 +198,7 @@ export const UpdateProfile = () => {
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Role</FormLabel>
+                      <FormLabel>Роль</FormLabel>
                       <Select
                         disabled={!isEditing || !isAdmin}
                         onValueChange={field.onChange}
@@ -214,18 +206,19 @@ export const UpdateProfile = () => {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a role" />
+                            <SelectValue placeholder="Оберіть роль" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="USER">User</SelectItem>
-                          <SelectItem value="EDITOR">Editor</SelectItem>
-                          {isAdmin && <SelectItem value="ADMIN">Admin</SelectItem>}
+                          <SelectItem value={ROLES.USER}>Користувач</SelectItem>
+                          <SelectItem value={ROLES.EDITOR}>Редактор</SelectItem>
+                          {isAdmin && <SelectItem value={ROLES.ADMIN}>Адміністратор</SelectItem>}
                         </SelectContent>
                       </Select>
                       {isEditor && !isAdmin && (
                         <FormDescription>
-                          You have editor privileges. Only admins can change roles.
+                          У вас є права доступу редактора. Тільки адміністратори можуть змінювати
+                          роль.
                         </FormDescription>
                       )}
                       <FormMessage />
@@ -251,9 +244,15 @@ export const UpdateProfile = () => {
                       });
                     }}
                   >
-                    Cancel
+                    Скасувати
                   </Button>
-                  <Button type="submit">Save Changes</Button>
+                  <Button
+                    type="submit"
+                    onClick={() => console.log(formState)}
+                    isLoading={updateProfileMutation.isPending}
+                  >
+                    Зберегти зміни
+                  </Button>
                 </div>
               )}
             </>
@@ -262,7 +261,7 @@ export const UpdateProfile = () => {
       </CardContent>
       {!isEditing && (
         <CardFooter>
-          <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+          <Button onClick={() => setIsEditing(true)}>Редагувати профіль</Button>
         </CardFooter>
       )}
     </Card>
