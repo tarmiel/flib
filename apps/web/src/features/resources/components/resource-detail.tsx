@@ -195,7 +195,7 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
                 fileType="djvu"
                 fileUrl="https://djvu.js.org/assets/djvu_examples/DjVu3Spec.djvu"
               />
-              {/* <FileViewer fileType="pdf" fileUrl="/content-sample/pdf" /> */}
+              {/* <FileViewer fileType="pdf" fileUrl="/sample.pdf" /> */}
             </TabsContent>
           </Tabs>
         </div>

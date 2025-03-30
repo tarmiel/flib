@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dropdown';
 import { ROLES } from '@/lib/authorization';
 import type { User } from '@/types/api';
-import { formatDate } from '@/utils';
+import { formatDate, formatDateIntl } from '@/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 
 interface GetColumnsProps {
@@ -87,7 +87,14 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<User>[]
     {
       accessorKey: 'createdAt',
       header: ({ column }) => <DataTableColumnHeader column={column} title="Дата реєстрації" />,
-      cell: ({ cell }) => formatDate(cell.getValue<Date>()),
+      cell: ({ cell }) =>
+        formatDateIntl(cell.getValue<Date>(), {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+        }),
     },
     {
       id: 'actions',

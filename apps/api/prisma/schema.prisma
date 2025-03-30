@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int              @id @default(autoincrement())
+  email           String           @unique
+  password_hash   String
+  first_name      String
+  last_name       String
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @default(now())
+  additional_info String?
+  user_role_id    Int              @map("fk_user_role_id")
+  role            Role             @relation(fields: [user_role_id], references: [id])
+  is_confirmed    Boolean          @default(true)
+  resources       Resource[]
+  saved_resources SavedResources[]
+
+  @@map("users")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  user User[]
+
+  @@map("roles")
+}
+
+model Resource {
+  id                  Int              @id @default(autoincrement())
+  title               String
+  description         String?
+  category_id         Int              @map("fk_category_id")
+  category            Category         @relation(fields: [category_id], references: [id])
+  publication_date    DateTime
+  authors             String[]
+  keywords            String[]
+  file_name           String
+  file_format         FileFormat
+  file_size           String
+  preview_image_url   String?
+  citation            String?
+  additional_info     Json
+  resource_type_id    Int              @map("fk_resource_type_id")
+  resource_type       ResourceType     @relation(fields: [resource_type_id], references: [id])
+  created_at          DateTime         @default(now())
+  updated_at          DateTime         @default(now())
+  uploaded_by_user_id Int              @map("fk_uploaded_by_user_id")
+  uploaded_by         User             @relation(fields: [uploaded_by_user_id], references: [id])
+  saved_resources     SavedResources[]
+
+  @@map("resources")
+}
+
+model Category {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  resource    Resource[]
+
+  @@map("categories")
+}
+
+model ResourceType {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  resource    Resource[]
+
+  @@map("resource_types")
+}
+
+enum FileFormat {
+  PDF
+  DJVU
+}
+
+model SavedResources {
+  id          Int      @id @default(autoincrement())
+  resource_id Int      @map("fk_resource_id")
+  resource    Resource @relation(fields: [resource_id], references: [id])
+  user_id     Int      @map("fk_user_id")
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@map("saved_resources")
+}

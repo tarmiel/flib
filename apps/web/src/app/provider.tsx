@@ -40,7 +40,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
             <NuqsAdapter>
-              {import.meta.env.DEV && <ReactQueryDevtools />}
+              {/* {import.meta.env.DEV && <ReactQueryDevtools />} */}
               <Notifications />
               <AuthLoader
                 renderLoading={() => (

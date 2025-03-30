@@ -39,7 +39,7 @@ export function UsersTable() {
   ];
 
   const { table } = useDataTable({
-    data: MOCK_USERS,
+    data: MOCK_USERS.slice(0, 6),
     columns,
     pageCount,
     filterFields,

@@ -61,7 +61,7 @@ export function ResourcesTable() {
   ];
 
   const { table } = useDataTable({
-    data: MOCK_RESOURCES,
+    data: MOCK_RESOURCES.slice(0, 6),
     columns,
     pageCount,
     filterFields,
