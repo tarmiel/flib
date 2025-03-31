@@ -32,7 +32,7 @@ export class AuthenticationService {
     try {
       const user = await this.validateUser(email, password);
 
-      if (!user) throw new UnauthorizedException('Invalid email or password');
+      if (!user) throw new BadRequestException('Invalid email or password');
 
       const token = await this.tokenGenerationService.generateToken(
         user.id,
@@ -41,7 +41,7 @@ export class AuthenticationService {
       );
 
       if (!token)
-        throw new UnauthorizedException('Login failed. Please try again.');
+        throw new BadRequestException('Login failed. Please try again.');
 
       return {
         accessToken: token,
@@ -52,7 +52,7 @@ export class AuthenticationService {
       };
     } catch (error) {
       this.logger.error(error);
-      throw new UnauthorizedException('Login failed. Please try again.');
+      throw new BadRequestException('Login failed. Invalid email or password.');
     }
   }
 

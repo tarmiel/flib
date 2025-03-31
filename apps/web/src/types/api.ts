@@ -4,8 +4,8 @@
 
 export type BaseEntity = {
   id: string | number;
-  createdAt: string | Date;
-  updatedAt: string | Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Entity<T> = {
@@ -14,8 +14,13 @@ export type Entity<T> = {
 
 export type Meta = {
   page: number;
+  pageSize: number;
   total: number;
-  totalPages: number;
+};
+
+export type Paginated<T> = {
+  data: T[];
+  meta: Meta;
 };
 
 export type User = Entity<{
@@ -31,7 +36,7 @@ export type User = Entity<{
 export type UserRole = 'admin' | 'user' | 'editor';
 
 export type AuthResponse = {
-  jwt: string;
+  accessToken: string;
   user: User;
 };
 

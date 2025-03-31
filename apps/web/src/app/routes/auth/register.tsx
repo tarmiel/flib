@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { AuthLayout } from '@/components/layouts/auth-layout';
 import { APP_PATH } from '@/config/paths';
 import { RegisterForm } from '@/features/auth/components/register-form';
+import { toast } from 'sonner';
 
 const RegisterRoute = () => {
   const navigate = useNavigate();
@@ -13,9 +14,10 @@ const RegisterRoute = () => {
     <AuthLayout title="Register your account">
       <RegisterForm
         onSuccess={() => {
-          navigate(`${redirectTo ? `${redirectTo}` : APP_PATH.app.root.getHref()}`, {
+          navigate(`${APP_PATH.auth.login.getHref(redirectTo)}`, {
             replace: true,
           });
+          toast.success('Реєстрація пройшла успішно. Будь ласка, авторизуйтеся');
         }}
       />
     </AuthLayout>

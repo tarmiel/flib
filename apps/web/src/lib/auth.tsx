@@ -6,18 +6,29 @@ import { APP_PATH } from '@/config/paths';
 import { AuthResponse, User } from '@/types/api';
 
 import { api } from './api-client';
+import { STORAGE_KEYS } from '@/config/storage';
+import { convertCamelToSnakeCase, convertSnakeToCamelCase } from '@/utils';
+import type { SnakeizeKeys } from '@/types/utils';
 
 // api call definitions for auth (types, schemas, requests):
 // these are not part of features as this is a module shared across features
 
-const getUser = async (): Promise<User> => {
-  const response = await api.get('/auth/me');
+const getUser = async (): Promise<User | null> => {
+  const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+  if (!token) {
+    return null;
+  }
+  try {
+    const response = (await api.get('/users/me')) as User;
 
-  return response.data;
+    return response;
+  } catch {
+    return null;
+  }
 };
 
-const logout = (): Promise<void> => {
-  return api.post('/auth/logout');
+const logout = async (): Promise<void> => {
+  localStorage.removeItem(STORAGE_KEYS.TOKEN);
 };
 
 export const loginInputSchema = z.object({
@@ -26,7 +37,7 @@ export const loginInputSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof loginInputSchema>;
-const loginWithEmailAndPassword = (data: LoginInput): Promise<AuthResponse> => {
+const loginWithEmailAndPassword = async (data: LoginInput): Promise<AuthResponse> => {
   return api.post('/auth/login', data);
 };
 
@@ -39,19 +50,21 @@ export const registerInputSchema = z.object({
 
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
-const registerWithEmailAndPassword = (data: RegisterInput): Promise<AuthResponse> => {
-  return api.post('/auth/register', data);
+const registerWithEmailAndPassword = async (data: RegisterInput): Promise<User | null> => {
+  await api.post('/auth/register', convertCamelToSnakeCase(data));
+
+  return null;
 };
 
 const authConfig = {
   userFn: getUser,
   loginFn: async (data: LoginInput) => {
     const response = await loginWithEmailAndPassword(data);
+    localStorage.setItem(STORAGE_KEYS.TOKEN, response.accessToken);
     return response.user;
   },
   registerFn: async (data: RegisterInput) => {
-    const response = await registerWithEmailAndPassword(data);
-    return response.user;
+    return registerWithEmailAndPassword(data);
   },
   logoutFn: logout,
 };
