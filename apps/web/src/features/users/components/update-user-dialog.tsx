@@ -8,24 +8,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useNotifications } from '@/components/ui/notifications';
 import type { User } from '@/types/api';
-import { useUpdateProfile } from '../api/update-profile';
+import { useUpdateUser } from '../api/update-user';
 import { UpdateUserForm } from './update-user-form';
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
+import { getUsersQueryOptions } from '../api/get-users';
 
 interface UpdateUserDialogProps extends React.ComponentPropsWithRef<typeof Dialog> {
   user: User | null;
+  page?: number;
 }
 
 export const UpdateUserDialog = ({ user, ...props }: UpdateUserDialogProps) => {
-  const { addNotification } = useNotifications();
-  const updateProfileMutation = useUpdateProfile({
+  const queryClient = useQueryClient();
+  const updateUserMutation = useUpdateUser({
     mutationConfig: {
       onSuccess: () => {
-        addNotification({
-          type: 'success',
-          title: 'Профіль оновлено',
+        queryClient.invalidateQueries({
+          queryKey: getUsersQueryOptions({ page: props.page }).queryKey,
         });
+        toast.success(`Профіль користувача оновлено`);
+        props.onOpenChange?.(false);
       },
     },
   });
@@ -39,8 +43,7 @@ export const UpdateUserDialog = ({ user, ...props }: UpdateUserDialogProps) => {
         </DialogHeader>
         <UpdateUserForm
           onSubmit={(values) => {
-            // updateProfileMutation.mutate({ data: values });
-            console.log(values);
+            updateUserMutation.mutate({ data: values, userId: user?.id ?? '' });
           }}
           user={user}
         >
@@ -49,24 +52,12 @@ export const UpdateUserDialog = ({ user, ...props }: UpdateUserDialogProps) => {
               <Button variant="outline">Скасувати</Button>
             </DialogClose>
             <Button
-              disabled={updateProfileMutation.isPending}
-              isLoading={updateProfileMutation.isPending}
+              disabled={updateUserMutation.isPending}
+              isLoading={updateUserMutation.isPending}
             >
               Зберегти
             </Button>
           </DialogFooter>
-
-          {/* <SheetFooter className="gap-2 pt-2 sm:space-x-0">
-            <SheetClose asChild>
-              <Button type="button" variant="outline">
-                Cancel
-              </Button>
-            </SheetClose>
-            <Button disabled={isPending}>
-              {isPending && <Loader className="mr-2 size-4 animate-spin" aria-hidden="true" />}
-              Save
-            </Button>
-          </SheetFooter> */}
         </UpdateUserForm>
       </DialogContent>
     </Dialog>

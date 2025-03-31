@@ -36,7 +36,7 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<User>[]
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
-          className="translate-y-0.5"
+          className="translate-y-0.5 inline-flex"
         />
       ),
       cell: ({ row }) => (
@@ -44,7 +44,7 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<User>[]
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
-          className="translate-y-0.5"
+          className="translate-y-0.5 inline-flex"
         />
       ),
       enableSorting: false,

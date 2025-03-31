@@ -8,16 +8,19 @@ import { useDataTable } from '@/hooks/use-data-table';
 
 import { getColumns } from './users-table-columns';
 import { ROLES } from '@/lib/authorization';
-import type { User } from '@/types/api';
+import type { Meta, User } from '@/types/api';
 import { UpdateUserDialog } from '@/features/users/components/update-user-dialog';
 import { UsersTableToolbarActions } from './users-table-toolbar-actions';
 import { MOCK_USERS } from '../lib/users';
 
 const pageCount = 2;
 
-export function UsersTable() {
-  // const [{ data, pageCount }, statusCounts, priorityCounts] = React.use(promises);
+interface UsersTableProps {
+  data: User[];
+  meta: Meta;
+}
 
+export function UsersTable({ data = [], meta }: UsersTableProps) {
   const [rowAction, setRowAction] = React.useState<DataTableRowAction<User> | null>(null);
 
   const columns = React.useMemo(() => getColumns({ setRowAction }), []);
@@ -38,8 +41,10 @@ export function UsersTable() {
     },
   ];
 
+  const pageCount = Math.ceil(meta.total / meta.pageSize);
+
   const { table } = useDataTable({
-    data: MOCK_USERS.slice(0, 6),
+    data,
     columns,
     pageCount,
     filterFields,
@@ -63,6 +68,7 @@ export function UsersTable() {
         open={rowAction?.type === 'update'}
         onOpenChange={() => setRowAction(null)}
         user={rowAction?.row.original ?? null}
+        page={meta.page}
       />
     </>
   );

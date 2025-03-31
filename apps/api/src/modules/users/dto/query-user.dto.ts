@@ -18,7 +18,12 @@ export class QueryUserDto {
 
   @IsOptional()
   @Transform(
-    ({ value }) => value.split(',').map((item: string) => item.trim()),
+    ({ value }) => {
+      if (typeof value === 'string') {
+        return value.split(',').map((item: string) => item.trim());
+      }
+      return value;
+    },
     { toClassOnly: true },
   )
   @IsArray()

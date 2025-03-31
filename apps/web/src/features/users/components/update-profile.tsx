@@ -151,7 +151,7 @@ export const UpdateProfile = () => {
               firstName: user.data?.firstName ?? '',
               lastName: user.data?.lastName ?? '',
               email: user.data?.email ?? '',
-              additionalInfo: user.data?.additionalInfo,
+              additionalInfo: user.data?.additionalInfo ?? '',
               role: user.data?.role as UserRole,
             },
           }}

@@ -2,26 +2,61 @@ import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
 import { type QueryConfig } from '@/lib/react-query';
-import { type User } from '@/types/api';
+import { type Meta, type User } from '@/types/api';
 
-export const getUsers = (): Promise<{ data: User[] }> => {
-  return api.get(`/users`);
+export type UserFilterParams = Partial<Pick<Meta, 'page' | 'pageSize'>> & {
+  firstName?: string;
+  role?: string[];
 };
 
-export const getUsersQueryOptions = () => {
+const sanitizeFilterParams = ({
+  page = 1,
+  pageSize = 10,
+  firstName = '',
+  role = [],
+}: UserFilterParams = {}): Partial<UserFilterParams> => {
+  const prepared: Record<string, unknown> = { page, pageSize };
+
+  if (firstName.trim()) {
+    prepared.firstName = firstName;
+  }
+
+  if (role.length > 0) {
+    prepared.role = role.join(',');
+  }
+
+  return prepared;
+};
+
+export const getUsers = (filters: UserFilterParams = {}): Promise<{ data: User[]; meta: Meta }> => {
+  const filterParams = sanitizeFilterParams(filters);
+
+  return api.get(`/users`, {
+    params: filterParams,
+  });
+};
+
+export const userQueryKeys = {
+  base: ['users'] as const,
+  list: (filters: UserFilterParams) =>
+    [...userQueryKeys.base, sanitizeFilterParams(filters)] as const,
+};
+
+export const getUsersQueryOptions = (filters: UserFilterParams) => {
   return queryOptions({
-    queryKey: ['users'],
-    queryFn: getUsers,
+    queryKey: userQueryKeys.list(filters),
+    queryFn: () => getUsers(filters),
   });
 };
 
 type UseUsersOptions = {
   queryConfig?: QueryConfig<typeof getUsersQueryOptions>;
+  filters?: UserFilterParams;
 };
 
-export const useUsers = ({ queryConfig }: UseUsersOptions = {}) => {
+export const useUsers = ({ queryConfig = {}, filters = {} }: UseUsersOptions = {}) => {
   return useQuery({
-    ...getUsersQueryOptions(),
+    ...getUsersQueryOptions(filters),
     ...queryConfig,
   });
 };

@@ -32,7 +32,13 @@ export function UpdateUserForm({ children, user, ...props }: UserFormProps) {
         id="update-user"
         schema={updateProfileInputSchema}
         options={{
-          defaultValues: { ...(user ?? {}) },
+          defaultValues: {
+            firstName: user?.firstName ?? '',
+            lastName: user?.lastName ?? '',
+            email: user?.email ?? '',
+            additionalInfo: user?.additionalInfo ?? '',
+            role: user?.role as User['role'],
+          },
         }}
         {...props}
       >
