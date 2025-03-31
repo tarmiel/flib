@@ -7,23 +7,17 @@ import { useDataTable } from '@/hooks/use-data-table';
 
 import { getColumns } from './resources-table-columns';
 
-import type { Resource } from '@/types/api';
-// import { DeleteResourceDialog } from '@/features/resources/components/delete-resource-dialog';
-import { ResourcesTableToolbarActions } from './resources-table-toolbar-actions';
-import {
-  MOCK_RESOURCES,
-  RESOURCE_CATEGORIES,
-  RESOURCE_FILE_FORMATS,
-  RESOURCE_TYPES,
-} from '../lib/resources';
-import { toSentenceCase } from '@/utils';
+import type { Meta, Resource } from '@/types/api';
+import { RESOURCE_CATEGORIES, RESOURCE_FILE_FORMATS, RESOURCE_TYPES } from '../lib/resources';
 import { DeleteResourcesDialog } from './delete-resources-dialog';
+import { ResourcesTableToolbarActions } from './resources-table-toolbar-actions';
 
-const pageCount = 2;
+interface ResourcesTableProps {
+  data: Resource[];
+  meta: Meta;
+}
 
-export function ResourcesTable() {
-  // const [{ data, pageCount }, statusCounts, priorityCounts] = React.use(promises);
-
+export function ResourcesTable({ data = [], meta }: ResourcesTableProps) {
   const [rowAction, setRowAction] = React.useState<DataTableRowAction<Resource> | null>(null);
 
   const columns = React.useMemo(() => getColumns({ setRowAction }), []);
@@ -60,8 +54,10 @@ export function ResourcesTable() {
     },
   ];
 
+  const pageCount = Math.ceil(meta.total / meta.pageSize);
+
   const { table } = useDataTable({
-    data: MOCK_RESOURCES.slice(0, 6),
+    data,
     columns,
     pageCount,
     filterFields,

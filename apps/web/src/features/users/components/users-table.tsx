@@ -11,9 +11,6 @@ import { ROLES } from '@/lib/authorization';
 import type { Meta, User } from '@/types/api';
 import { UpdateUserDialog } from '@/features/users/components/update-user-dialog';
 import { UsersTableToolbarActions } from './users-table-toolbar-actions';
-import { MOCK_USERS } from '../lib/users';
-
-const pageCount = 2;
 
 interface UsersTableProps {
   data: User[];

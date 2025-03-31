@@ -32,6 +32,13 @@ export const RESOURCE_TYPES = [
 
 export const RESOURCE_FILE_FORMATS = ['PDF', 'DJVU'];
 
+export const RESOURCE_SORT_OPTION = {
+  CREATED_DESC: 'created_desc',
+  CREATED_ASC: 'created_asc',
+  TITLE_DESC: 'title_desc',
+  TITLE_ASC: 'title_asc',
+} as const;
+
 export const MOCK_RESOURCES: Resource[] = [
   // Книга
   {

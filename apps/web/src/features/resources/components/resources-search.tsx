@@ -26,7 +26,7 @@ import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { useDebouncedCallback } from '@/hooks';
-import { RESOURCE_CATEGORIES, RESOURCE_TYPES } from '../lib/resources';
+import { RESOURCE_CATEGORIES, RESOURCE_SORT_OPTION, RESOURCE_TYPES } from '../lib/resources';
 
 const toggleArrayItem = <T,>(array: T[], item: T): T[] => {
   return array.includes(item) ? array.filter((element) => element !== item) : [...array, item];
@@ -155,10 +155,12 @@ export function ResourcesSearchSection() {
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="created_desc">Найновіші</SelectItem>
-              <SelectItem value="created_asc">Найстаріші</SelectItem>
-              <SelectItem value="title_asc">За назвою (від А до Я)</SelectItem>
-              <SelectItem value="title_desc">За назвою (від Я до А)</SelectItem>
+              <SelectItem value={RESOURCE_SORT_OPTION.CREATED_DESC}>Найновіші</SelectItem>
+              <SelectItem value={RESOURCE_SORT_OPTION.CREATED_ASC}>Найстаріші</SelectItem>
+              <SelectItem value={RESOURCE_SORT_OPTION.TITLE_ASC}>За назвою (від А до Я)</SelectItem>
+              <SelectItem value={RESOURCE_SORT_OPTION.TITLE_DESC}>
+                За назвою (від Я до А)
+              </SelectItem>
             </SelectContent>
           </Select>
           <Sheet>

@@ -2,7 +2,7 @@ import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
 import { type QueryConfig } from '@/lib/react-query';
-import { type Meta, type User } from '@/types/api';
+import { type Meta, type Paginated, type User } from '@/types/api';
 
 export type UserFilterParams = Partial<Pick<Meta, 'page' | 'pageSize'>> & {
   firstName?: string;
@@ -28,7 +28,7 @@ const sanitizeFilterParams = ({
   return prepared;
 };
 
-export const getUsers = (filters: UserFilterParams = {}): Promise<{ data: User[]; meta: Meta }> => {
+export const getUsers = (filters: UserFilterParams = {}): Promise<Paginated<User>> => {
   const filterParams = sanitizeFilterParams(filters);
 
   return api.get(`/users`, {

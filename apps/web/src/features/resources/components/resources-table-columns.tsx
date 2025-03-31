@@ -2,10 +2,10 @@ import type { DataTableRowAction } from '@/types/data-table';
 import type { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
-// import { toast } from "sonner";
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableColumnHeader } from '@/components/ui/data-table/data-table-column-header';
 import {
   DropdownMenu,
@@ -16,12 +16,9 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown';
-import { ROLES } from '@/lib/authorization';
-import type { Resource } from '@/types/api';
-import { formatDate } from '@/utils';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Link } from '@/components/ui/link';
 import { APP_PATH } from '@/config/paths';
+import type { Resource } from '@/types/api';
 
 interface GetColumnsProps {
   setRowAction: React.Dispatch<React.SetStateAction<DataTableRowAction<Resource> | null>>;
@@ -39,7 +36,7 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<Resourc
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
-          className="translate-y-0.5"
+          className="translate-y-0.5 inline-flex"
         />
       ),
       cell: ({ row }) => (
@@ -47,7 +44,7 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<Resourc
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
-          className="translate-y-0.5"
+          className="translate-y-0.5 inline-flex"
         />
       ),
       enableSorting: false,
