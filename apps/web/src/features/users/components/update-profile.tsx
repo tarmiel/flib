@@ -183,6 +183,7 @@ export const UpdateProfile = () => {
                 error={formState.errors['email']}
                 registration={register('email')}
                 disabled={!isEditing}
+                readOnly
               />
 
               <Textarea
@@ -199,11 +200,7 @@ export const UpdateProfile = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Роль</FormLabel>
-                      <Select
-                        disabled={!isEditing || !isAdmin}
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
+                      <Select disabled={true} onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Оберіть роль" />

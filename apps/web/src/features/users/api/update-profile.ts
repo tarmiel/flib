@@ -4,23 +4,22 @@ import { z } from 'zod';
 import { api } from '@/lib/api-client';
 import { useUser } from '@/lib/auth';
 import { MutationConfig } from '@/lib/react-query';
-import type { UserRole } from '@/types/api';
+import type { User, UserRole } from '@/types/api';
+import { convertCamelToSnakeCase } from '@/utils';
 
 const userRoles = ['user', 'editor', 'admin'] as const satisfies UserRole[];
 
 export const updateProfileInputSchema = z.object({
-  firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
-  lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }).optional(),
+  lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }).optional(),
   additionalInfo: z.string().optional(),
   role: z.enum(userRoles).readonly().optional(),
-  avatarUrl: z.string().optional(),
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
 
-export const updateProfile = ({ data }: { data: UpdateProfileInput }) => {
-  return api.patch(`/users/profile`, data);
+export const updateProfile = ({ data }: { data: UpdateProfileInput }): Promise<User> => {
+  return api.patch(`/users/me`, convertCamelToSnakeCase(data));
 };
 
 type UseUpdateProfileOptions = {
