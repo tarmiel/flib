@@ -346,3 +346,12 @@ export type Resource =
   | DissertationResource
   | AbstractResource
   | ReportResource;
+
+export type SavedResource = Entity<{
+  resourceId: Resource['id'];
+  userId: User['id'];
+}>;
+
+export type ResourceWithSavedStatus = Resource & {
+  isSaved: boolean;
+};
