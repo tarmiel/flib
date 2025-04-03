@@ -4,7 +4,7 @@ import { api } from '@/lib/api-client';
 import { QueryConfig } from '@/lib/react-query';
 import { type ResourceWithSavedStatus } from '@/types/api';
 
-export const getSavedResources = async (): Promise<ResourceWithSavedStatus[]> => {
+export const getSavedResources = async (): Promise<{ data: ResourceWithSavedStatus[] }> => {
   const response = await api.get(`/saved-resources`);
 
   return response.data;

@@ -3,15 +3,16 @@ import { useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Paginator } from '@/components/widgets/paginator';
+import { useToggleSaveResource } from '@/features/user-resources/api/toggle-save-resource';
+import type { Resource } from '@/types/api';
 import { cn } from '@/utils';
+import { getTotalPagesCount } from '@/utils/page';
 import { keepPreviousData } from '@tanstack/react-query';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v7';
 import { useResources } from '../api/get-resources';
-import { MOCK_RESOURCES } from '../lib/resources';
 import { parseResourcesFilters } from '../lib/resources-filter-params-parser';
 import { ResourceCard, ResourceCardSkeleton, type ViewMode } from './resource-card';
-import { getTotalPagesCount } from '@/utils/page';
 
 const DEFAULT_PAGE_SIZE = 10;
 const DEFAULT_PAGE = 1;
@@ -28,6 +29,11 @@ export function ResourcesSearchResults() {
       placeholderData: keepPreviousData,
     },
   });
+  const toggleSaveResourceMutation = useToggleSaveResource();
+
+  const handleToggleSaved = async (resourceId: Resource['id'], isSaved: boolean) => {
+    toggleSaveResourceMutation.mutate({ resourceId, isSaved });
+  };
 
   if (resourcesQuery.isLoading)
     return (
@@ -85,9 +91,11 @@ export function ResourcesSearchResults() {
             key={resource.id}
             resource={resource}
             viewMode={viewMode}
+            onToggleSaved={() => handleToggleSaved(resource.id, resource.isSaved)}
             className={cn({
-              'opacity-70 animate-pulse': resourcesQuery.isFetching,
+              // 'opacity-70 animate-pulse': resourcesQuery.isFetching,
             })}
+            isSaved={resource.isSaved}
           />
         ))}
       </div>

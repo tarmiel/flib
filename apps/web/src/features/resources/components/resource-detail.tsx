@@ -1,21 +1,21 @@
 import { useRef, useState } from 'react';
 
-import { Bookmark, BookOpen, Download, ExternalLink, FileText, Share2 } from 'lucide-react';
+import { Bookmark, BookOpen, Download, FileText, Share2 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { Link } from '@/components/ui/link';
-import { FileViewer } from '@/components/widgets/FileViewer';
-import type { Resource } from '@/types/api';
-import { ResourceTypeDetails } from './resource-additional-info';
 import { Input } from '@/components/ui/input';
+import { FileViewer } from '@/components/widgets/FileViewer';
+import { useToggleSaveResource } from '@/features/user-resources/api/toggle-save-resource';
+import type { ResourceWithSavedStatus } from '@/types/api';
+import { ResourceTypeDetails } from './resource-additional-info';
 
 type ResourceDetailProps = {
-  resource: Resource;
+  resource: ResourceWithSavedStatus;
 };
 
 const DetailTabs = {
@@ -25,13 +25,14 @@ const DetailTabs = {
 } as const;
 
 export function ResourceDetail({ resource }: ResourceDetailProps) {
-  const [isSaved, setIsSaved] = useState(false);
   const [activeTab, setActiveTab] = useState<string>(DetailTabs.OVERVIEW);
 
   const viewerTabRef = useRef<HTMLDivElement>(null);
 
-  const toggleSaved = () => {
-    setIsSaved(!isSaved);
+  const toggleSaveResourceMutation = useToggleSaveResource();
+
+  const handleToggleSaved = async (resourceId: ResourceWithSavedStatus['id'], isSaved: boolean) => {
+    toggleSaveResourceMutation.mutate({ resourceId, isSaved });
   };
 
   const handleReadOnlineClick = () => {
@@ -70,10 +71,10 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
             <Button
               variant="outline"
               className="w-full"
-              icon={<Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />}
-              onClick={toggleSaved}
+              icon={<Bookmark className={`h-4 w-4 ${resource.isSaved ? 'fill-current' : ''}`} />}
+              onClick={() => handleToggleSaved(resource.id, resource.isSaved)}
             >
-              {isSaved ? 'Збережено в бібліотеці' : 'Зберегти до бібліотеки'}
+              {resource.isSaved ? 'Збережено в бібліотеці' : 'Зберегти до бібліотеки'}
             </Button>
             <Button variant="outline" className="w-full" icon={<Share2 className="h-4 w-4" />}>
               Поділитися

@@ -21,11 +21,25 @@ export class SavedResourcesController {
 
   @Get()
   async findAll(@User() user: AuthenticatedUser) {
-    return this.savedResourcesService.findAll(user.userId);
+    const { resources = [] } = await this.savedResourcesService.findAllByUser(
+      user.userId,
+    );
+
+    return {
+      data: resources,
+    };
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.savedResourcesService.remove(+id);
+  // @Delete(':id')
+  // async delete(@Param('id') id: string) {
+  //   return this.savedResourcesService.delete(+id);
+  // }
+
+  @Delete(':resourceId')
+  async remove(
+    @Param('resourceId') resourceId: string,
+    @User() user: AuthenticatedUser,
+  ) {
+    return this.savedResourcesService.remove(user.userId, +resourceId);
   }
 }

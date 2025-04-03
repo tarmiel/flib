@@ -10,12 +10,8 @@ export type SaveResourceInput = {
   resourceId: Resource['id'];
 };
 
-export const saveResource = async ({
-  data,
-}: {
-  data: SaveResourceInput;
-}): Promise<SavedResource> => {
-  const response = await api.post('/saved-resources', data);
+export const saveResource = async ({ resourceId }: SaveResourceInput): Promise<SavedResource> => {
+  const response = await api.post('/saved-resources', { resource_id: resourceId });
 
   return response.data;
 };

@@ -6,8 +6,8 @@ import { MutationConfig } from '@/lib/react-query';
 import { getSavedResourcesQueryOptions } from './get-saved-resources';
 import type { Resource } from '@/types/api';
 
-export const deleteSavedResource = ({ savedResourceId }: { savedResourceId: Resource['id'] }) => {
-  return api.delete(`/saved-resources/${savedResourceId}`);
+export const deleteSavedResource = ({ resourceId }: { resourceId: Resource['id'] }) => {
+  return api.delete(`/saved-resources/${resourceId}`);
 };
 
 type UseRemoveSavedResourceOptions = {

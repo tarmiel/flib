@@ -45,14 +45,35 @@ export class SavedResourcesService {
     }
   }
 
+  async findAllByUser(userId: number) {
+    const savedResources =
+      await this.savedResourcesRepository.findAllByUser(userId);
+
+    return {
+      resources: savedResources.map((saved) => ({
+        ...saved.resource,
+        is_saved: true,
+      })),
+    };
+  }
+
   async findAll(userId: number) {
     const savedResources = await this.savedResourcesRepository.findAll(userId);
 
     return savedResources;
   }
 
-  async remove(id: number) {
-    const deletedResource = await this.savedResourcesRepository.remove(id);
+  async delete(id: number) {
+    const deletedResource = await this.savedResourcesRepository.delete(id);
+
+    return deletedResource;
+  }
+
+  async remove(userId: number, resourceId: number) {
+    const deletedResource = await this.savedResourcesRepository.remove(
+      userId,
+      resourceId,
+    );
 
     return deletedResource;
   }

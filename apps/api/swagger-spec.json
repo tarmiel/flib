@@ -864,12 +864,12 @@
         ]
       }
     },
-    "/saved-resources/{id}": {
+    "/saved-resources/{resourceId}": {
       "delete": {
         "operationId": "SavedResourcesController_remove",
         "parameters": [
           {
-            "name": "id",
+            "name": "resourceId",
             "required": true,
             "in": "path",
             "schema": {
@@ -879,7 +879,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [

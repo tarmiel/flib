@@ -1,5 +1,4 @@
 import { Head } from '@/components/seo';
-import { ResourceDetail } from '@/features/resources/components';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,16 +6,11 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { Link, useParams } from 'react-router';
-import { APP_PATH } from '@/config/paths';
-import type { Resource } from '@/types/api';
-import { MOCK_RESOURCES } from '@/features/resources/lib/resources';
-import { useResource } from '@/features/resources/api/get-resource';
 import { Spinner } from '@/components/ui/spinner';
-
-const getBookById = (id: string): Resource => {
-  return MOCK_RESOURCES.find((resource) => resource.id == id) ?? MOCK_RESOURCES[0]!;
-};
+import { APP_PATH } from '@/config/paths';
+import { useResource } from '@/features/resources/api/get-resource';
+import { ResourceDetail } from '@/features/resources/components';
+import { Link, useParams } from 'react-router';
 
 const ResourceRoute = () => {
   const params = useParams<{ resourceId: string }>();
@@ -33,7 +27,7 @@ const ResourceRoute = () => {
     );
   }
 
-  const resource = resourceQuery.data ?? getBookById(resourceId);
+  const resource = resourceQuery.data;
 
   if (!resource) return null;
 

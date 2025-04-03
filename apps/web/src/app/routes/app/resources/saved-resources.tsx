@@ -1,10 +1,19 @@
 import { Head } from '@/components/seo';
 import { ResourceCard, ResourceCardSkeleton } from '@/features/resources/components';
 import { useSavedResources } from '@/features/user-resources/api/get-saved-resources';
+import { useToggleSaveResource } from '@/features/user-resources/api/toggle-save-resource';
+import type { Resource } from '@/types/api';
 import { cn } from '@/utils';
 
 const SavedResourcesRoute = () => {
-  const { data: resources = [], isLoading, isFetched, isFetching } = useSavedResources();
+  const { data, isLoading, isFetched, isFetching } = useSavedResources();
+  const toggleSaveResourceMutation = useToggleSaveResource();
+
+  const handleToggleSaved = async (resourceId: Resource['id'], isSaved: boolean) => {
+    toggleSaveResourceMutation.mutate({ resourceId, isSaved });
+  };
+
+  const resources = data?.data ?? [];
 
   return (
     <>
@@ -32,6 +41,8 @@ const SavedResourcesRoute = () => {
               className={cn({
                 'opacity-70 animate-pulse': isFetching,
               })}
+              onToggleSaved={() => handleToggleSaved(resource.id, resource.isSaved)}
+              isSaved={resource.isSaved}
             />
           ))}
         </div>

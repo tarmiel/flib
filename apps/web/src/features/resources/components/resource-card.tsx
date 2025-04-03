@@ -41,15 +41,17 @@ export const ResourceCard = ({
               }}
             />
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 h-8 w-8 bg-background/80 backdrop-blur-sm"
-            onClick={() => onToggleSaved?.(resource.id)}
-          >
-            <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />
-            <span className="sr-only">Bookmark</span>
-          </Button>
+          {isSaved !== undefined && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2 h-8 w-8 bg-background/80 backdrop-blur-sm"
+              onClick={() => onToggleSaved?.(resource.id)}
+            >
+              <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />
+              <span className="sr-only">Bookmark</span>
+            </Button>
+          )}
         </div>
         <CardContent className="p-4">
           <div className="space-y-2">
