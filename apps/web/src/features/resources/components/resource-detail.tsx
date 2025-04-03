@@ -13,6 +13,8 @@ import { FileViewer } from '@/components/widgets/FileViewer';
 import { useToggleSaveResource } from '@/features/user-resources/api/toggle-save-resource';
 import type { ResourceWithSavedStatus } from '@/types/api';
 import { ResourceTypeDetails } from './resource-additional-info';
+import { useFileUrl } from '@/features/file-upload/api/get-file-url';
+import { toast } from 'sonner';
 
 type ResourceDetailProps = {
   resource: ResourceWithSavedStatus;
@@ -26,10 +28,21 @@ const DetailTabs = {
 
 export function ResourceDetail({ resource }: ResourceDetailProps) {
   const [activeTab, setActiveTab] = useState<string>(DetailTabs.OVERVIEW);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const viewerTabRef = useRef<HTMLDivElement>(null);
 
   const toggleSaveResourceMutation = useToggleSaveResource();
+  const { data: fileUrl, isLoading } = useFileUrl({
+    fileId: resource.fileName,
+    queryConfig: {
+      enabled: !!resource.fileName,
+    },
+  });
+
+  const handleDownload = () => {
+    window.open(fileUrl, '_blank');
+  };
 
   const handleToggleSaved = async (resourceId: ResourceWithSavedStatus['id'], isSaved: boolean) => {
     toggleSaveResourceMutation.mutate({ resourceId, isSaved });
@@ -39,6 +52,18 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
     setActiveTab(DetailTabs.VIEWER);
 
     viewerTabRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+
+    setShowTooltip(true);
+
+    setTimeout(() => {
+      setShowTooltip(false);
+    }, 2000);
+
+    toast.info('Посилання скопійовано до буфера обміну');
   };
 
   return (
@@ -65,7 +90,13 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
             >
               Переглянути Online
             </Button>
-            <Button variant="outline" className="w-full" icon={<Download className="h-4 w-4" />}>
+            <Button
+              variant="outline"
+              className="w-full"
+              icon={<Download className="h-4 w-4" />}
+              onClick={fileUrl ? handleDownload : undefined}
+              disabled={!fileUrl || isLoading}
+            >
               Завантажити
             </Button>
             <Button
@@ -76,9 +107,23 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
             >
               {resource.isSaved ? 'Збережено в бібліотеці' : 'Зберегти до бібліотеки'}
             </Button>
-            <Button variant="outline" className="w-full" icon={<Share2 className="h-4 w-4" />}>
-              Поділитися
-            </Button>
+            <TooltipProvider>
+              <Tooltip open={showTooltip}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    icon={<Share2 className="h-4 w-4" />}
+                    onClick={handleShare}
+                  >
+                    Поділитися
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Посилання скопійовано!</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <Card>
@@ -114,11 +159,6 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
             <div className="flex flex-wrap gap-2 mb-6">
               <Badge variant="secondary">{resource.resourceType.name}</Badge>
               <Badge variant="outline">{resource.category.name}</Badge>
-              {/* {resource.subjects.map((subject) => (
-                <Badge key={subject} variant="outline">
-                  {subject}
-                </Badge>
-              ))} */}
             </div>
           </div>
 
@@ -192,11 +232,7 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
             </TabsContent>
 
             <TabsContent ref={viewerTabRef} value={DetailTabs.VIEWER} className="space-y-6">
-              <FileViewer
-                fileType="djvu"
-                fileUrl="https://djvu.js.org/assets/djvu_examples/DjVu3Spec.djvu"
-              />
-              {/* <FileViewer fileType="pdf" fileUrl="/sample.pdf" /> */}
+              {fileUrl && <FileViewer fileType={resource.fileFormat} fileUrl={fileUrl} />}
             </TabsContent>
           </Tabs>
         </div>
