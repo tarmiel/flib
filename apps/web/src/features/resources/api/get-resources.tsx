@@ -2,7 +2,12 @@ import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
 import { type QueryConfig } from '@/lib/react-query';
-import { type Meta, type Paginated, type Resource } from '@/types/api';
+import {
+  type Meta,
+  type Paginated,
+  type Resource,
+  type ResourceWithSavedStatus,
+} from '@/types/api';
 
 export type ResourcesFilterParams = Partial<
   Pick<Meta, 'page' | 'pageSize'> & {
@@ -23,8 +28,6 @@ const sanitizeFilterParams = (
   const { category = [], resourceType = [], fileFormat = [], ...filters } = params;
   const prepared: Record<string, unknown> = { ...filters };
 
-  console.log({ category });
-
   if (category.length > 0) {
     prepared.category = category.join(',');
   }
@@ -40,12 +43,16 @@ const sanitizeFilterParams = (
   return prepared;
 };
 
-export const getResources = (filters: ResourcesFilterParams = {}): Promise<Paginated<Resource>> => {
+export const getResources = async (
+  filters: ResourcesFilterParams = {},
+): Promise<Paginated<ResourceWithSavedStatus>> => {
   const filterParams = sanitizeFilterParams(filters);
 
-  return api.get(`/resources`, {
+  const response = await api.get(`/resources`, {
     params: filterParams,
   });
+
+  return response.data;
 };
 
 export const resourcesQueryKeys = {
@@ -54,7 +61,7 @@ export const resourcesQueryKeys = {
     [...resourcesQueryKeys.base, sanitizeFilterParams(filters)] as const,
 };
 
-export const getResourcesQueryOptions = (filters: ResourcesFilterParams) => {
+export const getResourcesQueryOptions = (filters: ResourcesFilterParams = {}) => {
   return queryOptions({
     queryKey: resourcesQueryKeys.list(filters),
     queryFn: () => getResources(filters),

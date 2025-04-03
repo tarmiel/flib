@@ -7,8 +7,10 @@ import { useDataTable } from '@/hooks/use-data-table';
 
 import { getColumns } from './resources-table-columns';
 
+import { useCategories } from '@/features/resource-categories/api/get-resource-categories';
+import { useResourceTypes } from '@/features/resource-types/api/get-resource-types';
 import type { Meta, Resource } from '@/types/api';
-import { RESOURCE_CATEGORIES, RESOURCE_FILE_FORMATS, RESOURCE_TYPES } from '../lib/resources';
+import { RESOURCE_FILE_FORMATS } from '../lib/resources';
 import { DeleteResourcesDialog } from './delete-resources-dialog';
 import { ResourcesTableToolbarActions } from './resources-table-toolbar-actions';
 
@@ -18,6 +20,9 @@ interface ResourcesTableProps {
 }
 
 export function ResourcesTable({ data = [], meta }: ResourcesTableProps) {
+  const { data: categories = [] } = useCategories();
+  const { data: resourceTypes = [] } = useResourceTypes();
+
   const [rowAction, setRowAction] = React.useState<DataTableRowAction<Resource> | null>(null);
 
   const columns = React.useMemo(() => getColumns({ setRowAction }), []);
@@ -31,17 +36,17 @@ export function ResourcesTable({ data = [], meta }: ResourcesTableProps) {
     {
       id: 'resourceType',
       label: 'Тип',
-      options: RESOURCE_TYPES.map((type) => ({
-        label: type,
-        value: type,
+      options: resourceTypes.map((type) => ({
+        label: type.name,
+        value: type.name,
       })),
     },
     {
       id: 'category',
       label: 'Категорія',
-      options: RESOURCE_CATEGORIES.map((category) => ({
-        label: category,
-        value: category,
+      options: categories.map((category) => ({
+        label: category.name,
+        value: category.name,
       })),
     },
     {

@@ -11,6 +11,8 @@ import { Link, useParams } from 'react-router';
 import { APP_PATH } from '@/config/paths';
 import type { Resource } from '@/types/api';
 import { MOCK_RESOURCES } from '@/features/resources/lib/resources';
+import { useResource } from '@/features/resources/api/get-resource';
+import { Spinner } from '@/components/ui/spinner';
 
 const getBookById = (id: string): Resource => {
   return MOCK_RESOURCES.find((resource) => resource.id == id) ?? MOCK_RESOURCES[0]!;
@@ -19,7 +21,19 @@ const getBookById = (id: string): Resource => {
 const ResourceRoute = () => {
   const params = useParams<{ resourceId: string }>();
   const resourceId = params.resourceId as string;
-  const resource = getBookById(resourceId);
+  const resourceQuery = useResource({
+    resourceId: Number(resourceId),
+  });
+
+  if (resourceQuery.isLoading) {
+    return (
+      <div className="flex h-[80vh] w-full items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  const resource = resourceQuery.data ?? getBookById(resourceId);
 
   if (!resource) return null;
 

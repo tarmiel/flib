@@ -26,7 +26,7 @@ export const getInfiniteCommentsQueryOptions = (discussionId: Discussion['id']) 
       return getComments({ discussionId, page: pageParam as number });
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage?.meta?.page === lastPage?.meta?.totalPages) return undefined;
+      if (lastPage?.meta?.page === lastPage?.meta?.total) return undefined;
       const nextPage = lastPage.meta.page + 1;
       return nextPage;
     },

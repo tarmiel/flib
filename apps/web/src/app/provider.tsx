@@ -34,7 +34,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       }
     >
       <ErrorBoundary
-        FallbackComponent={MainErrorFallback}
+        FallbackComponent={() => <MainErrorFallback />}
         onError={(error) => console.log('Custom error', error)}
       >
         <HelmetProvider>
@@ -48,7 +48,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
                     <BookLoader />
                   </div>
                 )}
-                renderError={MainErrorFallback}
+                renderError={() => <MainErrorFallback />}
               >
                 {children}
               </AuthLoader>

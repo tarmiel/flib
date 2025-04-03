@@ -7,6 +7,7 @@ import { Link } from '@/components/ui/link';
 import { cn } from '@/utils';
 import type { Resource } from '@/types/api';
 import { APP_PATH } from '@/config/paths';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export type ViewMode = 'grid' | 'list';
 
@@ -33,7 +34,7 @@ export const ResourceCard = ({
             <img
               src={resource.previewImageUrl || '/placeholder.svg'}
               alt={resource.title}
-              className="object-cover"
+              className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null;
                 currentTarget.src = '/placeholder.svg';
@@ -90,6 +91,10 @@ export const ResourceCard = ({
             src={resource.previewImageUrl || '/placeholder.svg'}
             alt={resource.title}
             className="object-cover h-full"
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null;
+              currentTarget.src = '/placeholder.svg';
+            }}
           />
         </Link>
         <div className="flex flex-col flex-1 p-4">
@@ -128,6 +133,37 @@ export const ResourceCard = ({
           </div>
         </div>
       </div>
+    </Card>
+  );
+};
+
+export const ResourceCardSkeleton = () => {
+  return (
+    <Card className="w-full max-w-[300px] overflow-hidden">
+      <div className="relative h-[240px]">
+        <Skeleton className="h-full w-full" />
+
+        <div className="absolute top-2 right-2">
+          <Skeleton className="h-8 w-8 rounded" />
+        </div>
+      </div>
+
+      <CardContent className="pt-4 pb-2">
+        <Skeleton className="h-6 w-4/5 mb-2" />
+
+        <Skeleton className="h-4 w-3/5 mb-4" />
+
+        <div className="flex gap-2">
+          <Skeleton className="h-6 w-20" />
+          <Skeleton className="h-6 w-12" />
+          <Skeleton className="h-6 w-16" />
+        </div>
+      </CardContent>
+
+      {/* Button skeleton */}
+      <CardFooter className="pt-2 pb-4">
+        <Skeleton className="h-10 w-full" />
+      </CardFooter>
     </Card>
   );
 };

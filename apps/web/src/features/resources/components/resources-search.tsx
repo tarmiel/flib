@@ -27,6 +27,8 @@ import { Badge } from '@/components/ui/badge';
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { useDebouncedCallback } from '@/hooks';
 import { RESOURCE_CATEGORIES, RESOURCE_SORT_OPTION, RESOURCE_TYPES } from '../lib/resources';
+import { useCategories } from '@/features/resource-categories/api/get-resource-categories';
+import { useResourceTypes } from '@/features/resource-types/api/get-resource-types';
 
 const toggleArrayItem = <T,>(array: T[], item: T): T[] => {
   return array.includes(item) ? array.filter((element) => element !== item) : [...array, item];
@@ -41,7 +43,10 @@ export const useSearchFilters = () => {
   // Query parameters
   const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
 
-  const [sortBy, setSortBy] = useQueryState('sort', parseAsString.withDefault('created_desc'));
+  const [sortBy, setSortBy] = useQueryState(
+    'sort',
+    parseAsString.withDefault(RESOURCE_SORT_OPTION.CREATED_DESC),
+  );
 
   const [activeResourceTypes, setResourceTypes] = useQueryState(
     'resourceType',
@@ -92,6 +97,7 @@ export const useSearchFilters = () => {
     void setYearFrom(1990);
     void setYearTo(currentYear);
     void setPage(1);
+    void setSortBy(RESOURCE_SORT_OPTION.CREATED_DESC);
   };
 
   const activeFilters = [...activeResourceTypes, ...activeCategories];
@@ -137,6 +143,9 @@ export function ResourcesSearchSection() {
     resetAllFilters,
   } = useSearchFilters();
 
+  const { data: categories = [] } = useCategories();
+  const { data: resourceTypes = [] } = useResourceTypes();
+
   return (
     <div className="mb-8 space-y-4">
       <div className="flex flex-col md:flex-row gap-4">
@@ -180,16 +189,16 @@ export function ResourcesSearchSection() {
                 <div className="space-y-3">
                   <h3 className="text-sm font-medium">Тип ресурсу</h3>
                   <div className="space-y-2">
-                    {RESOURCE_TYPES.map((type) => (
-                      <div key={type} className="flex items-center space-x-2">
+                    {resourceTypes.map((type) => (
+                      <div key={type.id} className="flex items-center space-x-2">
                         <Checkbox
                           id={`type-${type}`}
-                          checked={activeResourceTypes.includes(type) || false}
+                          checked={activeResourceTypes.includes(type.name) || false}
                           onCheckedChange={() => {
-                            toggleResourceType(type);
+                            toggleResourceType(type.name);
                           }}
                         />
-                        <Label htmlFor={`type-${type}`}>{type}</Label>
+                        <Label htmlFor={`type-${type}`}>{type.name}</Label>
                       </div>
                     ))}
                   </div>
@@ -197,16 +206,16 @@ export function ResourcesSearchSection() {
                 <div className="space-y-3">
                   <h3 className="text-sm font-medium">Категорії</h3>
                   <div className="space-y-2">
-                    {RESOURCE_CATEGORIES.map((category) => (
-                      <div key={category} className="flex items-center space-x-2">
+                    {categories.map((category) => (
+                      <div key={category.id} className="flex items-center space-x-2">
                         <Checkbox
-                          id={`category-${category}`}
-                          checked={activeCategories.includes(category) || false}
+                          id={`category-${category.id}`}
+                          checked={activeCategories.includes(category.name) || false}
                           onCheckedChange={() => {
-                            toggleCategory(category);
+                            toggleCategory(category.name);
                           }}
                         />
-                        <Label htmlFor={`category-${category}`}>{category}</Label>
+                        <Label htmlFor={`category-${category.id}`}>{category.name}</Label>
                       </div>
                     ))}
                   </div>

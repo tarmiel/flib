@@ -1,21 +1,56 @@
 import { Grid3X3, List } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Paginator } from '@/components/widgets/paginator';
-import { ResourceCard, type ViewMode } from './resource-card';
+import { cn } from '@/utils';
+import { keepPreviousData } from '@tanstack/react-query';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import type { Resource } from '@/types/api';
+import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v7';
+import { useResources } from '../api/get-resources';
 import { MOCK_RESOURCES } from '../lib/resources';
+import { parseResourcesFilters } from '../lib/resources-filter-params-parser';
+import { ResourceCard, ResourceCardSkeleton, type ViewMode } from './resource-card';
+import { getTotalPagesCount } from '@/utils/page';
+
+const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE = 1;
 
 export function ResourcesSearchResults() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
+  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(DEFAULT_PAGE));
+  const searchParams = useOptimisticSearchParams();
+  const filters = useMemo(() => parseResourcesFilters(searchParams), [searchParams]);
+
+  const resourcesQuery = useResources({
+    filters,
+    queryConfig: {
+      placeholderData: keepPreviousData,
+    },
+  });
+
+  if (resourcesQuery.isLoading)
+    return (
+      <div className="space-y-6">
+        <div className={cn('grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6')}>
+          {Array(8)
+            .fill(null)
+            .map((_, index) => (
+              <ResourceCardSkeleton key={index} />
+            ))}
+        </div>
+      </div>
+    );
+
+  const resources = resourcesQuery.data;
+  if (!resources) return null;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Результат пошуку</h2>
+        <h2 className="text-xl font-semibold">
+          Результат пошуку ({resourcesQuery.data?.meta.total ?? 0})
+        </h2>
         <div className="flex items-center gap-2">
           <Button
             variant={viewMode === 'grid' ? 'default' : 'outline'}
@@ -38,23 +73,31 @@ export function ResourcesSearchResults() {
         </div>
       </div>
 
-      {viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {MOCK_RESOURCES.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} viewMode={'grid'} />
-          ))}
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {MOCK_RESOURCES.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} viewMode={'list'} />
-          ))}
-        </div>
-      )}
+      <div
+        className={cn(
+          viewMode === 'list'
+            ? 'space-y-4'
+            : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6',
+        )}
+      >
+        {resources.data?.map((resource) => (
+          <ResourceCard
+            key={resource.id}
+            resource={resource}
+            viewMode={viewMode}
+            className={cn({
+              'opacity-70 animate-pulse': resourcesQuery.isFetching,
+            })}
+          />
+        ))}
+      </div>
 
       <Paginator
         currentPage={page}
-        totalPages={12}
+        totalPages={getTotalPagesCount(
+          resourcesQuery.data?.meta.total,
+          resourcesQuery.data?.meta.pageSize ?? DEFAULT_PAGE_SIZE,
+        )}
         onPageChange={(pageNumber) => {
           setPage(pageNumber);
         }}
