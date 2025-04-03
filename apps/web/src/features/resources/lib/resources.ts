@@ -30,7 +30,12 @@ export const RESOURCE_TYPES = [
   'Звіт',
 ];
 
-export const RESOURCE_FILE_FORMATS = ['PDF', 'DJVU'];
+export const FILE_FORMAT = {
+  PDF: 'PDF',
+  DJVU: 'DJVU',
+} as const;
+
+export const RESOURCE_FILE_FORMATS = [FILE_FORMAT.PDF, FILE_FORMAT.DJVU];
 
 export const RESOURCE_SORT_OPTION = {
   CREATED_DESC: 'created_desc',
@@ -45,6 +50,7 @@ export const MOCK_RESOURCES: Resource[] = [
     id: '1',
     title: 'Алгоритми та структури даних',
     category: {
+      id: 1,
       name: 'Алгоритми',
     },
     description:
@@ -64,6 +70,7 @@ export const MOCK_RESOURCES: Resource[] = [
       edition: '2-е видання',
     },
     resourceType: {
+      id: 1,
       name: 'Книга',
     },
     createdAt: '2023-02-10T12:00:00Z',
@@ -76,6 +83,7 @@ export const MOCK_RESOURCES: Resource[] = [
     id: '2',
     title: 'Методи оптимізації нейронних мереж',
     category: {
+      id: 1,
       name: 'Штучний інтелект',
     },
     description:
@@ -95,6 +103,7 @@ export const MOCK_RESOURCES: Resource[] = [
       DOI: '10.1000/xyz123',
     },
     resourceType: {
+      id: 1,
       name: 'Стаття',
     },
     createdAt: '2023-12-01T14:20:00Z',
@@ -107,6 +116,7 @@ export const MOCK_RESOURCES: Resource[] = [
     id: '3',
     title: 'Лекції з баз даних',
     category: {
+      id: 1,
       name: 'Бази даних',
     },
     description:
@@ -124,6 +134,7 @@ export const MOCK_RESOURCES: Resource[] = [
       academicYear: '2022-2023',
     },
     resourceType: {
+      id: 1,
       name: 'Методичні матеріали',
     },
     createdAt: '2022-09-05T08:00:00Z',
@@ -136,6 +147,7 @@ export const MOCK_RESOURCES: Resource[] = [
     id: '4',
     title: 'Посібник з Python',
     category: {
+      id: 1,
       name: 'Системне програмування',
     },
     description:
@@ -153,6 +165,7 @@ export const MOCK_RESOURCES: Resource[] = [
       language: 'Українська',
     },
     resourceType: {
+      id: 1,
       name: 'Посібник',
     },
     createdAt: '2021-04-01T10:00:00Z',
@@ -165,6 +178,7 @@ export const MOCK_RESOURCES: Resource[] = [
     id: '5',
     title: 'Безпека вбудованих систем',
     category: {
+      id: 1,
       name: 'Вбудовані системи',
     },
     description:
@@ -182,6 +196,7 @@ export const MOCK_RESOURCES: Resource[] = [
       conferenceDate: new Date('2023-07-10'),
     },
     resourceType: {
+      id: 1,
       name: 'Конференційний матеріал',
     },
     createdAt: '2023-07-15T09:00:00Z',
@@ -194,6 +209,7 @@ export const MOCK_RESOURCES: Resource[] = [
     id: '6',
     title: 'Квантова криптографія',
     category: {
+      id: 1,
       name: 'Квантова фізика',
     },
     description:
@@ -212,6 +228,7 @@ export const MOCK_RESOURCES: Resource[] = [
       defenseDate: new Date('2022-12-15'),
     },
     resourceType: {
+      id: 1,
       name: 'Дисертація',
     },
     createdAt: '2022-12-20T14:00:00Z',
@@ -224,6 +241,7 @@ export const MOCK_RESOURCES: Resource[] = [
     id: '7',
     title: 'Історія розвитку електроніки',
     category: {
+      id: 1,
       name: 'Електроніка',
     },
     description:
@@ -240,6 +258,7 @@ export const MOCK_RESOURCES: Resource[] = [
       summary: 'Огляд основних етапів розвитку електроніки.',
     },
     resourceType: {
+      id: 1,
       name: 'Реферат',
     },
     createdAt: '2024-02-15T10:30:00Z',
@@ -252,6 +271,7 @@ export const MOCK_RESOURCES: Resource[] = [
     id: '8',
     title: 'Звіт про стан мереж 5G',
     category: {
+      id: 1,
       name: 'Мережеві технології',
     },
     description:
@@ -269,6 +289,7 @@ export const MOCK_RESOURCES: Resource[] = [
       reportDate: new Date('2023-09-25'),
     },
     resourceType: {
+      id: 1,
       name: 'Звіт',
     },
     createdAt: '2023-10-01T13:00:00Z',
@@ -278,30 +299,30 @@ export const MOCK_RESOURCES: Resource[] = [
 ];
 
 export const MOCK_CATEGORIES: Category[] = [
-  { id: 'c1', name: 'Алгоритми', createdAt: '', updatedAt: '' },
-  { id: 'c2', name: 'Системне програмування', createdAt: '', updatedAt: '' },
-  { id: 'c3', name: 'Мережеві технології', createdAt: '', updatedAt: '' },
-  { id: 'c4', name: 'Бази даних', createdAt: '', updatedAt: '' },
-  { id: 'c5', name: 'Штучний інтелект', createdAt: '', updatedAt: '' },
-  { id: 'c6', name: 'Інформаційна безпека', createdAt: '', updatedAt: '' },
-  { id: 'c7', name: 'Вбудовані системи', createdAt: '', updatedAt: '' },
-  { id: 'c8', name: 'Розподілені системи', createdAt: '', updatedAt: '' },
-  { id: 'c9', name: 'Фізика', createdAt: '', updatedAt: '' },
-  { id: 'c10', name: 'Квантова фізика', createdAt: '', updatedAt: '' },
-  { id: 'c11', name: 'Вища математика', createdAt: '', updatedAt: '' },
-  { id: 'c12', name: 'Електроніка', createdAt: '', updatedAt: '' },
-  { id: 'c13', name: 'Радіофізика', createdAt: '', updatedAt: '' },
-  { id: 'c14', name: "Комп'ютерні системи", createdAt: '', updatedAt: '' },
-  { id: 'c15', name: 'Інше', createdAt: '', updatedAt: '' },
+  { id: 1, name: 'Алгоритми', createdAt: '', updatedAt: '' },
+  { id: 2, name: 'Системне програмування', createdAt: '', updatedAt: '' },
+  { id: 3, name: 'Мережеві технології', createdAt: '', updatedAt: '' },
+  { id: 4, name: 'Бази даних', createdAt: '', updatedAt: '' },
+  { id: 5, name: 'Штучний інтелект', createdAt: '', updatedAt: '' },
+  { id: 6, name: 'Інформаційна безпека', createdAt: '', updatedAt: '' },
+  { id: 7, name: 'Вбудовані системи', createdAt: '', updatedAt: '' },
+  { id: 8, name: 'Розподілені системи', createdAt: '', updatedAt: '' },
+  { id: 9, name: 'Фізика', createdAt: '', updatedAt: '' },
+  { id: 10, name: 'Квантова фізика', createdAt: '', updatedAt: '' },
+  { id: 11, name: 'Вища математика', createdAt: '', updatedAt: '' },
+  { id: 12, name: 'Електроніка', createdAt: '', updatedAt: '' },
+  { id: 13, name: 'Радіофізика', createdAt: '', updatedAt: '' },
+  { id: 14, name: "Комп'ютерні системи", createdAt: '', updatedAt: '' },
+  { id: 15, name: 'Інше', createdAt: '', updatedAt: '' },
 ];
 
 export const MOCK_RESOURCE_TYPES: ResourceType[] = [
-  { id: 'rt1', name: 'Книга', createdAt: '', updatedAt: '' },
-  { id: 'rt2', name: 'Стаття', createdAt: '', updatedAt: '' },
-  { id: 'rt3', name: 'Методичні матеріали', createdAt: '', updatedAt: '' },
-  { id: 'rt4', name: 'Посібник', createdAt: '', updatedAt: '' },
-  { id: 'rt5', name: 'Конференційний матеріал', createdAt: '', updatedAt: '' },
-  { id: 'rt6', name: 'Дисертація', createdAt: '', updatedAt: '' },
-  { id: 'rt7', name: 'Реферат', createdAt: '', updatedAt: '' },
-  { id: 'rt8', name: 'Звіт', createdAt: '', updatedAt: '' },
+  { id: 1, name: 'Книга', createdAt: '', updatedAt: '' },
+  { id: 2, name: 'Стаття', createdAt: '', updatedAt: '' },
+  { id: 3, name: 'Методичні матеріали', createdAt: '', updatedAt: '' },
+  { id: 4, name: 'Посібник', createdAt: '', updatedAt: '' },
+  { id: 5, name: 'Конференційний матеріал', createdAt: '', updatedAt: '' },
+  { id: 6, name: 'Дисертація', createdAt: '', updatedAt: '' },
+  { id: 7, name: 'Реферат', createdAt: '', updatedAt: '' },
+  { id: 8, name: 'Звіт', createdAt: '', updatedAt: '' },
 ];

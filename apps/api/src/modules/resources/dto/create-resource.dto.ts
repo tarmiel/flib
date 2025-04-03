@@ -52,7 +52,6 @@ export class CreateResourceDto {
 
   @IsOptional()
   @IsString()
-  @IsUrl()
   preview_image_name?: string;
 
   @IsOptional()

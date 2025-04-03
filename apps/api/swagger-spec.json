@@ -1040,8 +1040,7 @@
             "type": "string"
           },
           "preview_image_name": {
-            "type": "string",
-            "format": "uri"
+            "type": "string"
           },
           "citation": {
             "type": "string"
@@ -1107,8 +1106,7 @@
             "type": "string"
           },
           "preview_image_name": {
-            "type": "string",
-            "format": "uri"
+            "type": "string"
           },
           "citation": {
             "type": "string"

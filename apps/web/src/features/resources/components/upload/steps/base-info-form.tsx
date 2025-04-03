@@ -24,9 +24,14 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { MOCK_CATEGORIES, MOCK_RESOURCE_TYPES } from '@/features/resources/lib/resources';
+import { useCategories } from '@/features/resource-categories/api/get-resource-categories';
+import { useResourceTypes } from '@/features/resource-types/api/get-resource-types';
 
 export function BaseInfoForm() {
   const keywordInputRef = useRef<HTMLInputElement>(null);
+  const { data: categories = [] } = useCategories();
+  const { data: resourceTypes = [] } = useResourceTypes();
+
   const form = useFormContext<ResourceUploadFormData>();
 
   const {
@@ -46,10 +51,8 @@ export function BaseInfoForm() {
     name: 'authors',
   });
 
-  // Watch keywords to update UI
   const keywords = watch('keywords') || [];
 
-  // Add a keyword
   const addKeyword = (keyword: string) => {
     if (!keyword.trim()) return;
 
@@ -61,7 +64,6 @@ export function BaseInfoForm() {
     return false;
   };
 
-  // Remove a keyword
   const removeKeyword = (keyword: string) => {
     const currentKeywords = getValues('keywords') || [];
     setValue(
@@ -70,7 +72,6 @@ export function BaseInfoForm() {
     );
   };
 
-  // Handle keyword input
   const handleKeywordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
@@ -184,7 +185,7 @@ export function BaseInfoForm() {
                 <Select
                   onValueChange={(value) => {
                     const resourceType =
-                      MOCK_RESOURCE_TYPES.find((type) => type.name == value) ?? undefined;
+                      resourceTypes.find((type) => type.name == value) ?? undefined;
                     if (resourceType) {
                       field.onChange(resourceType);
                       form.setValue('resourceTypeName', resourceType.name);
@@ -200,8 +201,8 @@ export function BaseInfoForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {MOCK_RESOURCE_TYPES.map((type) => (
-                      <SelectItem key={type.name} value={type.name}>
+                    {resourceTypes.map((type) => (
+                      <SelectItem key={type.id} value={type.name}>
                         {type.name}
                       </SelectItem>
                     ))}
@@ -225,7 +226,7 @@ export function BaseInfoForm() {
                 </FormLabel>
                 <Select
                   onValueChange={(value) =>
-                    field.onChange(MOCK_CATEGORIES.find((type) => type.name == value) ?? undefined)
+                    field.onChange(categories.find((type) => type.name == value) ?? undefined)
                   }
                   value={field.value?.name}
                 >
@@ -235,14 +236,14 @@ export function BaseInfoForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {MOCK_CATEGORIES.map((category) => (
-                      <SelectItem key={category.name} value={category.name}>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.name}>
                         {category.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <FormDescription>головна категорія ресурсу.</FormDescription>
+                <FormDescription>Головна категорія ресурсу.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

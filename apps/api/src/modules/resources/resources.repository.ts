@@ -15,6 +15,7 @@ export class ResourcesRepository {
     keywords: true,
     file_name: true,
     file_format: true,
+    file_size: true,
     preview_image_url: true,
     citation: true,
     additional_info: true,

@@ -1,11 +1,7 @@
 import { Head } from '@/components/seo';
 import { ResourcesSearchResults, ResourcesSearchSection } from '@/features/resources/components';
-import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v7';
 
 const BrowseRoute = () => {
-  const searchParams = useOptimisticSearchParams();
-
-  console.log({ searchParams });
   return (
     <>
       <Head title={'Browse'} />
