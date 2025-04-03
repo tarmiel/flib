@@ -143,7 +143,7 @@ export const resourceFileUploadSchema = z.object({
 
 export const resourcePreviewImageSchema = z.object({
   previewImageName: z.string().optional(),
-  previewImageUrl: z.string().optional(),
+  previewImageUrl: z.string().optional().nullable(),
 });
 
 export type BaseInfoFormData = z.infer<typeof baseInfoSchema>;

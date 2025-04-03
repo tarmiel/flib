@@ -170,13 +170,27 @@ export class ResourcesService {
       );
       if (!category) throw new BadRequestException('Category does not exist');
 
+      if (
+        !updateResourceDto.preview_image_name &&
+        existingResource.preview_image_url
+      ) {
+        // TODO: remove preview image, delete file
+      }
+
+      if (
+        updateResourceDto.preview_image_name &&
+        existingResource.preview_image_url
+      ) {
+        // TODO: update preview image, delete old file
+      }
+
       if (updateResourceDto.preview_image_name) {
         try {
           const existingPreviewImageUrl = await this.minioService.objectExists(
             this.bucketName,
             updateResourceDto.preview_image_name,
           );
-          if (!existingPreviewImageUrl) {
+          if (existingPreviewImageUrl) {
             const previewImageUrl =
               await this.minioService.getPresignedUrlForDownload(
                 this.bucketName,
