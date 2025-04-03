@@ -26,10 +26,10 @@ export default function ResourcesPage() {
           <h1 className="text-3xl font-bold tracking-tight">Управління Ресурсами</h1>
         </div>
         <DataTableSkeleton
-          columnCount={6}
+          columnCount={8}
           searchableColumnCount={1}
-          filterableColumnCount={2}
-          cellWidths={['10rem', '40rem', '12rem', '12rem', '8rem', '8rem']}
+          filterableColumnCount={3}
+          cellWidths={['2rem', '10rem', '6rem', '6rem', '8rem', '4rem', '6rem', '6rem']}
           shrinkZero
         />
       </div>

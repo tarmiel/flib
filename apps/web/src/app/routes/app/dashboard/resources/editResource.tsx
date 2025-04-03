@@ -1,3 +1,5 @@
+import { Spinner } from '@/components/ui/spinner';
+import { useResource } from '@/features/resources/api/get-resource';
 import { ResourceEditForm, ResourceUploadForm } from '@/features/resources/components';
 import { useParams } from 'react-router';
 
@@ -25,9 +27,12 @@ const getResourceById = (id: string) => {
 export default function EditResourceRoute() {
   const params = useParams<{ resourceId: string }>();
 
-  if (!params.resourceId) return null;
-
-  const resource = getResourceById(params.resourceId);
+  const resourceQuery = useResource({
+    resourceId: Number(params.resourceId),
+    queryConfig: {
+      enabled: !!params.resourceId,
+    },
+  });
 
   return (
     <div className="space-y-6">
@@ -35,7 +40,43 @@ export default function EditResourceRoute() {
         <h1 className="text-3xl font-bold tracking-tight">Управління Ресурсами</h1>
       </div>
 
-      <ResourceEditForm resourceId={params.resourceId} initialData={resource} />
+      {resourceQuery.isPending && (
+        <div className="flex h-full w-full items-center justify-center">
+          <Spinner size="xl" />
+        </div>
+      )}
+
+      {!resourceQuery.isError && !resourceQuery.isPending ? (
+        <ResourceEditForm
+          resourceId={resourceQuery.data.id}
+          initialData={{
+            title: resourceQuery.data.title,
+            authors: resourceQuery.data.authors.map((author) => ({
+              name: author,
+            })),
+            keywords: resourceQuery.data.keywords,
+            description: resourceQuery.data.description ?? '',
+            category: {
+              id: resourceQuery.data.category.id,
+              name: resourceQuery.data.category.name,
+            },
+            resourceType: {
+              id: resourceQuery.data.resourceType.id,
+              name: resourceQuery.data.resourceType.name,
+            },
+            publicationDate: new Date(resourceQuery.data.publicationDate)
+              .toISOString()
+              .split('T')[0],
+            citation: resourceQuery.data.citation ?? '',
+            additionalInfo: resourceQuery.data.additionalInfo as any,
+            fileName: resourceQuery.data.fileName,
+            fileFormat: resourceQuery.data.fileFormat,
+            fileSize: resourceQuery.data.fileSize,
+            previewImageUrl: resourceQuery.data.previewImageUrl,
+            resourceTypeName: resourceQuery.data.resourceType.name,
+          }}
+        />
+      ) : null}
     </div>
   );
 }
