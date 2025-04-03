@@ -26,6 +26,11 @@ export class QueryResourceDto {
 
   @IsOptional()
   @IsString()
+  @Length(1, 255)
+  title?: string;
+
+  @IsOptional()
+  @IsString()
   sort?: SortOptions;
 
   @IsOptional()

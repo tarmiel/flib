@@ -341,6 +341,16 @@
             }
           },
           {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minLength": 1,
+              "maxLength": 255,
+              "type": "string"
+            }
+          },
+          {
             "name": "sort",
             "required": false,
             "in": "query",

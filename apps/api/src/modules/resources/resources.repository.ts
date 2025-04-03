@@ -70,6 +70,7 @@ export class ResourcesRepository {
   async findAll(filters: QueryResourceDto, userId: number) {
     const {
       q = '',
+      title,
       sort,
       page,
       pageSize,
@@ -120,6 +121,7 @@ export class ResourcesRepository {
             },
           ],
         },
+        title ? { title: { contains: title, mode: 'insensitive' } } : {},
         resourceType ? { resource_type: { name: { in: resourceType } } } : {},
         category ? { category: { name: { in: category } } } : {},
         yearFrom ? { publication_date: { gte: new Date(yearFrom, 0, 1) } } : {},
