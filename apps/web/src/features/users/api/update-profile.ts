@@ -18,8 +18,10 @@ export const updateProfileInputSchema = z.object({
 
 export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
 
-export const updateProfile = ({ data }: { data: UpdateProfileInput }): Promise<User> => {
-  return api.patch(`/users/me`, convertCamelToSnakeCase(data));
+export const updateProfile = async ({ data }: { data: UpdateProfileInput }): Promise<User> => {
+  const response = await api.patch(`/users/me`, convertCamelToSnakeCase(data));
+
+  return response.data;
 };
 
 type UseUpdateProfileOptions = {

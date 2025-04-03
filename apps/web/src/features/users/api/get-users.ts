@@ -28,12 +28,14 @@ const sanitizeFilterParams = ({
   return prepared;
 };
 
-export const getUsers = (filters: UserFilterParams = {}): Promise<Paginated<User>> => {
+export const getUsers = async (filters: UserFilterParams = {}): Promise<Paginated<User>> => {
   const filterParams = sanitizeFilterParams(filters);
 
-  return api.get(`/users`, {
+  const response = await api.get(`/users`, {
     params: filterParams,
   });
+
+  return response.data;
 };
 
 export const userQueryKeys = {
@@ -42,7 +44,7 @@ export const userQueryKeys = {
     [...userQueryKeys.base, sanitizeFilterParams(filters)] as const,
 };
 
-export const getUsersQueryOptions = (filters: UserFilterParams) => {
+export const getUsersQueryOptions = (filters: UserFilterParams = {}) => {
   return queryOptions({
     queryKey: userQueryKeys.list(filters),
     queryFn: () => getUsers(filters),

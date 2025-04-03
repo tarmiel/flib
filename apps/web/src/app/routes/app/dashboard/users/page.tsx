@@ -27,10 +27,10 @@ export default function UsersPage() {
           <h1 className="text-3xl font-bold tracking-tight">Управління користувачами</h1>
         </div>
         <DataTableSkeleton
-          columnCount={6}
+          columnCount={5}
           searchableColumnCount={1}
-          filterableColumnCount={2}
-          cellWidths={['10rem', '40rem', '12rem', '12rem', '8rem', '8rem']}
+          filterableColumnCount={1}
+          cellWidths={['2rem', '15rem', '10rem', '10rem', '10rem']}
           shrinkZero
         />
       </div>
