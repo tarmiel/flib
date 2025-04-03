@@ -25,7 +25,10 @@ export const api = Axios.create({
 api.interceptors.request.use(authRequestInterceptor);
 api.interceptors.response.use(
   (response) => {
-    return convertSnakeToCamelCase(response.data);
+    return {
+      ...response,
+      data: convertSnakeToCamelCase(response.data),
+    };
   },
   (error) => {
     const message = error.response?.data?.message || error.message;

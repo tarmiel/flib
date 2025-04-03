@@ -5,13 +5,9 @@ import { z } from 'zod';
 import { APP_PATH } from '@/config/paths';
 import { AuthResponse, User } from '@/types/api';
 
-import { api } from './api-client';
 import { STORAGE_KEYS } from '@/config/storage';
-import { convertCamelToSnakeCase, convertSnakeToCamelCase } from '@/utils';
-import type { SnakeizeKeys } from '@/types/utils';
-
-// api call definitions for auth (types, schemas, requests):
-// these are not part of features as this is a module shared across features
+import { convertCamelToSnakeCase } from '@/utils';
+import { api } from './api-client';
 
 const getUser = async (): Promise<User | null> => {
   const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
@@ -19,9 +15,9 @@ const getUser = async (): Promise<User | null> => {
     return null;
   }
   try {
-    const response = (await api.get('/users/me')) as User;
+    const response = await api.get('/users/me');
 
-    return response;
+    return response.data;
   } catch {
     return null;
   }
@@ -38,7 +34,8 @@ export const loginInputSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginInputSchema>;
 const loginWithEmailAndPassword = async (data: LoginInput): Promise<AuthResponse> => {
-  return api.post('/auth/login', data);
+  const response = await api.post('/auth/login', data);
+  return response.data;
 };
 
 export const registerInputSchema = z.object({

@@ -9,6 +9,22 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+function getFileCountString(count: number): string {
+  const pluralRules = new Intl.PluralRules('uk');
+  const rule = pluralRules.select(count);
+
+  switch (rule) {
+    case 'one':
+      return `${count} файл`;
+    case 'few':
+      return `${count} файли`;
+    case 'many':
+      return `${count} файлів`;
+    default:
+      return `${count} файлів`;
+  }
+}
+
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Value of the uploader.
@@ -111,12 +127,12 @@ export function FileUploader(props: FileUploaderProps) {
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
-        toast.error('Cannot upload more than 1 file at a time');
+        toast.error('Не можна завантажити більше ніж 1 файл одночасно');
         return;
       }
 
       if ((files?.length ?? 0) + acceptedFiles.length > maxFileCount) {
-        toast.error(`Cannot upload more than ${maxFileCount} files`);
+        toast.error(`Не можна завантажити більше ніж ${maxFileCount} файлів`);
         return;
       }
 
@@ -126,26 +142,25 @@ export function FileUploader(props: FileUploaderProps) {
         }),
       );
       const updatedFiles = files ? [...files, ...newFiles] : newFiles;
-      console.log({ acceptedFiles, newFiles, updatedFiles });
 
       setFiles(updatedFiles);
 
       if (rejectedFiles.length > 0) {
         rejectedFiles.forEach(({ file }) => {
-          toast.error(`File ${file.name} was rejected`);
+          toast.error(`Файл ${file.name} було відхилено`);
         });
       }
 
       if (onUpload && updatedFiles.length > 0 && updatedFiles.length <= maxFileCount) {
-        const target = updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`;
+        const target = getFileCountString(updatedFiles.length);
 
         toast.promise(onUpload(updatedFiles), {
-          loading: `Uploading ${target}...`,
+          loading: `Завантаження: ${target}...`,
           success: () => {
-            // setFiles([]);
-            return `${target} uploaded`;
+            setFiles([]);
+            return `${target} завантажено`;
           },
-          error: `Failed to upload ${target}`,
+          error: `Не вдалося завантажити ${target}`,
         });
       }
     },
