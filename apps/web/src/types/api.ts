@@ -67,14 +67,13 @@ export type BaseResource = Entity<{
   fileFormat: ResourceFileType;
   fileSize?: string;
   description?: string;
-  publicationDate: Date | string;
+  publicationDate: string;
   authors: string[];
   keywords?: string[];
   citation?: string;
-  category: Pick<Category, 'name'>;
-  resourceType: Pick<ResourceType, 'name'>;
-  // uploadedBy: Pick<User, 'id' | 'firstName' | 'lastName' | 'email'>;
-  uploadedBy: User;
+  category: Pick<Category, 'id' | 'name'>;
+  resourceType: Pick<ResourceType, 'id' | 'name'>;
+  uploadedBy: Pick<User, 'id' | 'firstName' | 'lastName' | 'email'>;
   additionalInfo?: AdditionalInfo;
 }>;
 
@@ -89,7 +88,6 @@ export type ResourceTypeName =
   | 'Звіт';
 
 export type ResourceType = Entity<{
-  id: string;
   name: ResourceTypeName; // ResourceTypeName
   description?: string;
 }>;
@@ -112,7 +110,6 @@ export type CategoryName =
   | 'Інше';
 
 export type Category = Entity<{
-  id: string;
   name: CategoryName; // CategoryName
   description?: string;
 }>;
@@ -239,6 +236,7 @@ export interface ReportAdditionalInfo {
 export interface BookResource extends BaseResource {
   /** Тип ресурсу – літеральне значення "Книга" */
   resourceType: {
+    id: ResourceType['id'];
     name: 'Книга';
   };
   /** Додаткова інформація для книги */
@@ -251,6 +249,7 @@ export interface BookResource extends BaseResource {
 export interface ArticleResource extends BaseResource {
   /** Тип ресурсу – літеральне значення "Стаття" */
   resourceType: {
+    id: ResourceType['id'];
     name: 'Стаття';
   };
   /** Додаткова інформація для статті */
@@ -263,6 +262,7 @@ export interface ArticleResource extends BaseResource {
 export interface MethodicalResource extends BaseResource {
   /** Тип ресурсу – літеральне значення "Методичні матеріали" */
   resourceType: {
+    id: ResourceType['id'];
     name: 'Методичні матеріали';
   };
   /** Додаткова інформація для методичних матеріалів */
@@ -275,6 +275,7 @@ export interface MethodicalResource extends BaseResource {
 export interface ManualResource extends BaseResource {
   /** Тип ресурсу – літеральне значення "Посібник" */
   resourceType: {
+    id: ResourceType['id'];
     name: 'Посібник';
   };
   /** Додаткова інформація для посібника */
@@ -287,6 +288,7 @@ export interface ManualResource extends BaseResource {
 export interface ConferenceResource extends BaseResource {
   /** Тип ресурсу – літеральне значення "Конференційний матеріал" */
   resourceType: {
+    id: ResourceType['id'];
     name: 'Конференційний матеріал';
   };
   /** Додаткова інформація для конференційного матеріалу */
@@ -299,6 +301,7 @@ export interface ConferenceResource extends BaseResource {
 export interface DissertationResource extends BaseResource {
   /** Тип ресурсу – літеральне значення "Дисертація" */
   resourceType: {
+    id: ResourceType['id'];
     name: 'Дисертація';
   };
   /** Додаткова інформація для дисертації */
@@ -311,6 +314,7 @@ export interface DissertationResource extends BaseResource {
 export interface AbstractResource extends BaseResource {
   /** Тип ресурсу – літеральне значення "Реферат" */
   resourceType: {
+    id: ResourceType['id'];
     name: 'Реферат';
   };
   /** Додаткова інформація для реферату */
@@ -323,6 +327,7 @@ export interface AbstractResource extends BaseResource {
 export interface ReportResource extends BaseResource {
   /** Тип ресурсу – літеральне значення "Звіт" */
   resourceType: {
+    id: ResourceType['id'];
     name: 'Звіт';
   };
   /** Додаткова інформація для звіту */
