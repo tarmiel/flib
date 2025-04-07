@@ -81,32 +81,33 @@ export function ResourceEditForm({ resourceId, initialData = {} }: ResourceEditF
   };
 
   const onSubmit = async (data: ResourceUploadFormData) => {
-    updateResourceMutation.mutate(
-      {
-        resourceId,
-        data: {
-          title: data.title,
-          description: data.description,
-          citation: data.citation,
-          resourceTypeId: data.resourceType.id,
-          categoryId: data.category.id,
-          publicationDate: data.publicationDate,
-          authors: data.authors.map((author) => author.name) ?? [],
-          keywords: data.keywords ?? [],
-          additionalInfo: data.additionalInfo,
-          fileName: data.fileName,
-          fileFormat: data.fileFormat,
-          fileSize: data.fileSize,
-          previewImageName: data.previewImageName,
-        },
-      },
-      {
-        onSuccess: () => {
-          toast.success('Ресурс успішно оновлено.');
-          navigate(-1);
-        },
-      },
-    );
+    console.log('onSubmit', data);
+    // updateResourceMutation.mutate(
+    //   {
+    //     resourceId,
+    //     data: {
+    //       title: data.title,
+    //       description: data.description,
+    //       citation: data.citation,
+    //       resourceTypeId: data.resourceType.id,
+    //       categoryId: data.category.id,
+    //       publicationDate: data.publicationDate,
+    //       authors: data.authors.map((author) => author.name) ?? [],
+    //       keywords: data.keywords ?? [],
+    //       additionalInfo: data.additionalInfo,
+    //       fileName: data.fileName,
+    //       fileFormat: data.fileFormat,
+    //       fileSize: data.fileSize,
+    //       previewImageName: data.previewImageName,
+    //     },
+    //   },
+    //   {
+    //     onSuccess: () => {
+    //       toast.success('Ресурс успішно оновлено.');
+    //       navigate(-1);
+    //     },
+    //   },
+    // );
   };
 
   return (

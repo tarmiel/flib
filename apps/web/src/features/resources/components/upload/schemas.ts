@@ -132,13 +132,28 @@ const reportSchema = z.object({
 });
 
 export const resourceFileUploadSchema = z.object({
-  fileName: z.string({
-    required_error: "Файл обов'язковий",
-  }),
-  fileFormat: z.enum([FILE_FORMAT.PDF, FILE_FORMAT.DJVU]),
-  fileSize: z.string({
-    required_error: "Розмір файлу обов'язковий",
-  }),
+  fileName: z
+    .string({
+      required_error: "Файл обов'язковий",
+    })
+    .optional()
+    .refine((val) => Boolean(val), {
+      message: "Файл обов'язковий",
+    }),
+  fileFormat: z
+    .enum([FILE_FORMAT.PDF, FILE_FORMAT.DJVU])
+    .optional()
+    .refine((val) => Boolean(val), {
+      message: "Формат файлу обов'язковий",
+    }),
+  fileSize: z
+    .string({
+      required_error: "Розмір файлу обов'язковий",
+    })
+    .optional()
+    .refine((val) => Boolean(val), {
+      message: "Розмір файлу обов'язковий",
+    }),
 });
 
 export const resourcePreviewImageSchema = z.object({

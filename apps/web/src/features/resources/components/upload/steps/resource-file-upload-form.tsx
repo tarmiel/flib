@@ -37,13 +37,20 @@ export const ResourceFileUploadForm = () => {
   };
 
   const onRemove = async (fileName: string) => {
-    form.resetField('fileName');
-    form.resetField('fileFormat');
-    form.resetField('fileSize');
+    console.log('onRemove', fileName);
+
+    form.setValue('fileName', undefined);
+    form.setValue('fileFormat', undefined);
+    form.setValue('fileSize', undefined);
+
+    console.log(form.getValues());
   };
 
-  const [name, format = '', size = ''] = form.getValues(['fileName', 'fileFormat', 'fileSize']);
-  const uploadedFile = name ? { name: removeIdPrefix(name), format, size } : null;
+  const name = form.watch('fileName');
+  const format = form.watch('fileFormat');
+  const size = form.watch('fileSize');
+
+  const uploadedFile = name && format && size ? { name, format, size } : null;
 
   return (
     <div className="space-y-6">
