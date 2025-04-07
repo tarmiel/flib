@@ -37,6 +37,7 @@ CREATE TABLE "resources" (
     "file_name" TEXT NOT NULL,
     "file_format" "FileFormat" NOT NULL,
     "file_size" TEXT NOT NULL,
+    "preview_image_name" TEXT,
     "preview_image_url" TEXT,
     "citation" TEXT,
     "additional_info" JSONB NOT NULL,
@@ -68,11 +69,10 @@ CREATE TABLE "resource_types" (
 
 -- CreateTable
 CREATE TABLE "saved_resources" (
-    "id" SERIAL NOT NULL,
     "fk_resource_id" INTEGER NOT NULL,
     "fk_user_id" INTEGER NOT NULL,
 
-    CONSTRAINT "saved_resources_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "saved_resources_pkey" PRIMARY KEY ("fk_user_id","fk_resource_id")
 );
 
 -- CreateIndex
@@ -80,6 +80,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "saved_resources_fk_user_id_fk_resource_id_key" ON "saved_resources"("fk_user_id", "fk_resource_id");
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_fk_user_role_id_fkey" FOREIGN KEY ("fk_user_role_id") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -98,7 +101,6 @@ ALTER TABLE "saved_resources" ADD CONSTRAINT "saved_resources_fk_resource_id_fke
 
 -- AddForeignKey
 ALTER TABLE "saved_resources" ADD CONSTRAINT "saved_resources_fk_user_id_fkey" FOREIGN KEY ("fk_user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
 
 INSERT INTO roles (name) VALUES ('admin'), ('editor'), ('user');
 

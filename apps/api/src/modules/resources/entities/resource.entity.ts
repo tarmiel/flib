@@ -10,7 +10,8 @@ export class ResourceEntity {
   fileName: string;
   fileFormat: FileFormat;
   fileSize: string;
-  previewImageUrl?: string;
+  previewImageName?: string | null;
+  previewImageUrl?: string | null;
   citation?: string;
   additionalInfo: any;
   resourceTypeId: number;

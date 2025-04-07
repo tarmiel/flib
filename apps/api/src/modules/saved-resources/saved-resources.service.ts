@@ -28,13 +28,14 @@ export class SavedResourcesService {
 
       const existingSavedResource = await this.savedResourcesRepository.findOne(
         createSavedResourceDto.resource_id,
+        userId,
       );
       if (existingSavedResource)
         throw new ConflictException('Resource is already saved by this user');
 
       const savedResource: SavedResource = {
         resourceId: createSavedResourceDto.resource_id,
-        userId: userId,
+        userId,
       };
 
       return await this.savedResourcesRepository.create(savedResource);
@@ -63,17 +64,8 @@ export class SavedResourcesService {
     return savedResources;
   }
 
-  async delete(id: number) {
-    const deletedResource = await this.savedResourcesRepository.delete(id);
-
-    return deletedResource;
-  }
-
-  async remove(userId: number, resourceId: number) {
-    const deletedResource = await this.savedResourcesRepository.remove(
-      userId,
-      resourceId,
-    );
+  async delete(resourceId: number, userId: number) {
+    const deletedResource = await this.savedResourcesRepository.delete(resourceId, userId);
 
     return deletedResource;
   }

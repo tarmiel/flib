@@ -16,6 +16,7 @@ export class ResourcesRepository {
     file_name: true,
     file_format: true,
     file_size: true,
+    preview_image_name: true,
     preview_image_url: true,
     citation: true,
     additional_info: true,
@@ -57,6 +58,7 @@ export class ResourcesRepository {
         file_name: resource.fileName,
         file_format: resource.fileFormat,
         file_size: resource.fileSize,
+        preview_image_name: resource.previewImageName,
         preview_image_url: resource.previewImageUrl,
         citation: resource.citation,
         additional_info: resource.additionalInfo,
@@ -138,9 +140,6 @@ export class ResourcesRepository {
         select: {
           ...this.select,
           saved_resources: {
-            select: {
-              id: true,
-            },
             where: {
               user_id: userId,
             },
@@ -173,9 +172,6 @@ export class ResourcesRepository {
       select: {
         ...this.select,
         saved_resources: {
-          select: {
-            id: true,
-          },
           where: {
             user_id: userId,
           },
@@ -208,6 +204,7 @@ export class ResourcesRepository {
         file_name: resource.fileName,
         file_format: resource.fileFormat,
         file_size: resource.fileSize,
+        preview_image_name: resource.previewImageName,
         preview_image_url: resource.previewImageUrl,
         citation: resource.citation,
         additional_info: resource.additionalInfo,

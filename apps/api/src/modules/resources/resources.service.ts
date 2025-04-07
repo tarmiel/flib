@@ -62,15 +62,17 @@ export class ResourcesService {
       );
       if (!category) throw new BadRequestException('Category does not exist');
 
-      if (createResourceDto.preview_image_name) {
+      const previewImageName = createResourceDto.preview_image_name;
+      if (previewImageName) {
         try {
           const previewImageUrl =
             await this.minioService.getPresignedUrlForDownload(
               this.bucketName,
-              createResourceDto.preview_image_name,
+              previewImageName,
             );
           if (previewImageUrl) {
             resourceEntity.previewImageUrl = previewImageUrl;
+            resourceEntity.previewImageName = previewImageName;
           }
         } catch (error) {
           this.logger.error(error);
@@ -152,8 +154,8 @@ export class ResourcesService {
         fileName: updateResourceDto.file_name,
         fileFormat: updateResourceDto.file_format,
         fileSize: updateResourceDto.file_size,
-        previewImageUrl: updateResourceDto.preview_image_name,
         citation: updateResourceDto.citation,
+        previewImageName: updateResourceDto.preview_image_name ?? null,
         additionalInfo: updateResourceDto.additional_info,
         resourceTypeId: updateResourceDto.resource_type_id,
         uploadedByUserId: id,
@@ -171,17 +173,26 @@ export class ResourcesService {
       if (!category) throw new BadRequestException('Category does not exist');
 
       if (
-        !updateResourceDto.preview_image_name &&
-        existingResource.preview_image_url
+        existingResource.preview_image_name &&
+        existingResource.preview_image_url &&
+        updateResourceDto.preview_image_name !==
+          existingResource.preview_image_name
       ) {
-        // TODO: remove preview image, delete file
+        await this.minioService
+          .removeObject(this.bucketName, existingResource.preview_image_name)
+          .catch(() => {
+            this.logger.error('Error while removing preview image from bucket');
+          });
+        resourceEntity.previewImageName = null;
+        resourceEntity.previewImageUrl = null;
       }
 
-      if (
-        updateResourceDto.preview_image_name &&
-        existingResource.preview_image_url
-      ) {
-        // TODO: update preview image, delete old file
+      if (updateResourceDto.file_name !== existingResource.file_name) {
+        await this.minioService
+          .removeObject(this.bucketName, existingResource.file_name)
+          .catch(() => {
+            this.logger.error('Error while removing file from bucket');
+          });
       }
 
       if (updateResourceDto.preview_image_name) {
@@ -198,6 +209,8 @@ export class ResourcesService {
               );
             if (previewImageUrl) {
               resourceEntity.previewImageUrl = previewImageUrl;
+              resourceEntity.previewImageName =
+                updateResourceDto.preview_image_name;
             }
           }
         } catch (error) {
@@ -236,9 +249,10 @@ export class ResourcesService {
         .catch(() => {
           this.logger.error('Error while removing file from bucket');
         });
-      if (resource.preview_image_url) {
+      const previewImageName = resource.preview_image_name;
+      if (previewImageName) {
         await this.minioService
-          .removeObject(this.bucketName, resource.preview_image_url!)
+          .removeObject(this.bucketName, previewImageName)
           .catch(() => {
             this.logger.error('Error while removing preview image from bucket');
           });

@@ -45,6 +45,7 @@ model Resource {
   file_name           String
   file_format         FileFormat
   file_size           String
+  preview_image_name  String?
   preview_image_url   String?
   citation            String?
   additional_info     Json
@@ -83,11 +84,12 @@ enum FileFormat {
 }
 
 model SavedResources {
-  id          Int      @id @default(autoincrement())
   resource_id Int      @map("fk_resource_id")
   resource    Resource @relation(fields: [resource_id], references: [id])
   user_id     Int      @map("fk_user_id")
   user        User     @relation(fields: [user_id], references: [id])
 
+  @@id([user_id, resource_id])
+  @@unique([user_id, resource_id])
   @@map("saved_resources")
 }

@@ -3,6 +3,7 @@ import { SavedResourcesService } from './saved-resources.service';
 import { CreateSavedResourceDto } from './dto/create-saved-resource.dto';
 import { User } from '../iam/authentication/decorators/user.decorator';
 import { AuthenticatedUser } from 'src/common/interfaces/authenticated-user.interface';
+import { IdParamDto } from 'src/common/dto/id-param.dto';
 
 @Controller('saved-resources')
 export class SavedResourcesController {
@@ -35,11 +36,11 @@ export class SavedResourcesController {
   //   return this.savedResourcesService.delete(+id);
   // }
 
-  @Delete(':resourceId')
+  @Delete(':id')
   async remove(
-    @Param('resourceId') resourceId: string,
+    @Param() { id }: IdParamDto,
     @User() user: AuthenticatedUser,
   ) {
-    return this.savedResourcesService.remove(user.userId, +resourceId);
+    return this.savedResourcesService.delete(id, user.userId);
   }
 }

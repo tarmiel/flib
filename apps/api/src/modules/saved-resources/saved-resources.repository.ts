@@ -14,10 +14,13 @@ export class SavedResourcesRepository {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(resourceId: number, userId: number) {
     return await this.prisma.savedResources.findUnique({
       where: {
-        id,
+        user_id_resource_id: {
+          user_id: userId,
+          resource_id: resourceId,
+        },
       },
     });
   }
@@ -31,10 +34,13 @@ export class SavedResourcesRepository {
     });
   }
 
-  async delete(id: number) {
+  async delete(resourceId: number, userId: number) {
     return await this.prisma.savedResources.delete({
       where: {
-        id,
+        user_id_resource_id: {
+          user_id: userId,
+          resource_id: resourceId,
+        },
       },
     });
   }
