@@ -12,6 +12,7 @@ import {
 import type { Resource } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
+import { useDeleteResources } from '../api/delete-resource';
 
 interface DeleteResourcesDialogProps extends React.ComponentPropsWithoutRef<typeof Dialog> {
   resources: Row<Resource>['original'][];
@@ -25,9 +26,12 @@ export function DeleteResourcesDialog({
   onSuccess,
   ...props
 }: DeleteResourcesDialogProps) {
+  const deleteResourcesMutation = useDeleteResources();
   const handleDeleteResources = () => {
+    deleteResourcesMutation.mutate({
+      resourceIds: resources.map((resource) => resource.id),
+    });
     props.onOpenChange?.(false);
-    console.log('Tasks deleted');
     onSuccess?.();
   };
 
