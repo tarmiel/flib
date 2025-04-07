@@ -26,6 +26,10 @@ const convert = (queryClient: QueryClient) => (m: any) => {
 export const createAppRouter = (queryClient: QueryClient) =>
   createBrowserRouter([
     {
+      path: '/',
+      element: <Navigate to={APP_PATH.app.root.path} replace />,
+    },
+    {
       path: APP_PATH.home.path,
       lazy: () => import('./routes/landing').then(convert(queryClient)),
     },
@@ -61,18 +65,6 @@ export const createAppRouter = (queryClient: QueryClient) =>
         {
           path: APP_PATH.app.savedResources.path,
           lazy: () => import('./routes/app/resources/saved-resources').then(convert(queryClient)),
-        },
-        {
-          path: APP_PATH.app.discussions.path,
-          lazy: () => import('./routes/app/discussions/discussions').then(convert(queryClient)),
-        },
-        {
-          path: APP_PATH.app.discussion.path,
-          lazy: () => import('./routes/app/discussions/discussion').then(convert(queryClient)),
-        },
-        {
-          path: APP_PATH.app.users.path,
-          lazy: () => import('./routes/app/users').then(convert(queryClient)),
         },
       ],
     },
