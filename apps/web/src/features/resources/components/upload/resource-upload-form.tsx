@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useCreateResource } from '../../api/create-resource';
 import {
   additionalInfoValidationKeys,
+  authorRightsConfirmationValidationKeys,
   baseInfoValidationKeys,
   resourceFileUploadValidationKeys,
   resourcePreviewImageValidationKeys,
@@ -24,6 +25,7 @@ import { BaseInfoForm } from './steps/base-info-form';
 import { PreviewFileUploadForm } from './steps/preview-file-upload-form';
 import { ResourceFileUploadForm } from './steps/resource-file-upload-form';
 import { APP_PATH } from '@/config/paths';
+import { ReviewForm } from './steps/review-form';
 
 export const resourceFormSteps = [
   { id: 'basic-info', label: 'Основна інформація' },
@@ -75,6 +77,8 @@ export function ResourceUploadForm() {
         return resourceFileUploadValidationKeys;
       case 3: // Preview Image Upload
         return resourcePreviewImageValidationKeys;
+      case 4: // Author Rights Confirmation
+        return authorRightsConfirmationValidationKeys;
       default:
         return [];
     }
@@ -127,7 +131,7 @@ export function ResourceUploadForm() {
             {currentStep === 1 && <AdditionalInfoForm />}
             {currentStep === 2 && <ResourceFileUploadForm />}
             {currentStep === 3 && <PreviewFileUploadForm />}
-            {currentStep === 4 && null}
+            {currentStep === 4 && <ReviewForm />}
 
             <div className="flex justify-between pt-4">
               <Button

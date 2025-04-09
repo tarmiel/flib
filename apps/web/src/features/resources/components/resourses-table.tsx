@@ -9,10 +9,11 @@ import { getColumns } from './resources-table-columns';
 
 import { useCategories } from '@/features/resource-categories/api/get-resource-categories';
 import { useResourceTypes } from '@/features/resource-types/api/get-resource-types';
-import type { Meta, Resource } from '@/types/api';
+import type { Meta, Resource, User } from '@/types/api';
 import { RESOURCE_FILE_FORMATS } from '../lib/resources';
 import { DeleteResourcesDialog } from './delete-resources-dialog';
 import { ResourcesTableToolbarActions } from './resources-table-toolbar-actions';
+import { useUser } from '@/lib/auth';
 
 interface ResourcesTableProps {
   data: Resource[];
@@ -22,10 +23,11 @@ interface ResourcesTableProps {
 export function ResourcesTable({ data = [], meta }: ResourcesTableProps) {
   const { data: categories = [] } = useCategories();
   const { data: resourceTypes = [] } = useResourceTypes();
+  const { data: user } = useUser();
 
   const [rowAction, setRowAction] = React.useState<DataTableRowAction<Resource> | null>(null);
 
-  const columns = React.useMemo(() => getColumns({ setRowAction }), []);
+  const columns = React.useMemo(() => getColumns({ setRowAction, user: user as User }), [user]);
 
   const filterFields: DataTableFilterField<Resource>[] = [
     {

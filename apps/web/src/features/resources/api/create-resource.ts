@@ -20,7 +20,7 @@ export type CreateResourceInput = {
   fileName: string;
   fileFormat: string;
   fileSize: string;
-  previewImageName?: string;
+  previewImageName?: string | null;
 };
 
 export const createResource = ({ data }: { data: CreateResourceInput }): Promise<Resource> => {

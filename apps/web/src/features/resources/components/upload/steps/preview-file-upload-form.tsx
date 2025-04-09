@@ -40,7 +40,9 @@ export const PreviewFileUploadForm = () => {
           onUpload={onUpload}
           disabled={isPending || !!imageName}
         />
-        {imageUrl && <ImagePreview url={imageUrl} name={imageName} onDelete={() => onRemove('')} />}
+        {imageUrl && imageName && (
+          <ImagePreview url={imageUrl} name={imageName} onDelete={() => onRemove('')} />
+        )}
       </div>
     </div>
   );

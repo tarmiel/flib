@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
-import { APP_PATH } from '@/config/paths';
 import type { Resource } from '@/types/api';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -16,6 +15,7 @@ import { useUpdateResource } from '../../api/update-resource';
 import { resourceFormSteps } from './resource-upload-form';
 import {
   additionalInfoValidationKeys,
+  authorRightsConfirmationValidationKeys,
   baseInfoValidationKeys,
   resourceFileUploadValidationKeys,
   resourcePreviewImageValidationKeys,
@@ -26,6 +26,7 @@ import { AdditionalInfoForm } from './steps/additional-info-form';
 import { BaseInfoForm } from './steps/base-info-form';
 import { PreviewFileUploadForm } from './steps/preview-file-upload-form';
 import { ResourceFileUploadForm } from './steps/resource-file-upload-form';
+import { ReviewForm } from './steps/review-form';
 
 interface ResourceEditFormProps {
   resourceId: Resource['id'];
@@ -75,39 +76,40 @@ export function ResourceEditForm({ resourceId, initialData = {} }: ResourceEditF
         return resourceFileUploadValidationKeys;
       case 3: // Preview Image Upload
         return resourcePreviewImageValidationKeys;
+      case 4: // Author Rights Confirmation
+        return authorRightsConfirmationValidationKeys;
       default:
         return [];
     }
   };
 
   const onSubmit = async (data: ResourceUploadFormData) => {
-    console.log('onSubmit', data);
-    // updateResourceMutation.mutate(
-    //   {
-    //     resourceId,
-    //     data: {
-    //       title: data.title,
-    //       description: data.description,
-    //       citation: data.citation,
-    //       resourceTypeId: data.resourceType.id,
-    //       categoryId: data.category.id,
-    //       publicationDate: data.publicationDate,
-    //       authors: data.authors.map((author) => author.name) ?? [],
-    //       keywords: data.keywords ?? [],
-    //       additionalInfo: data.additionalInfo,
-    //       fileName: data.fileName,
-    //       fileFormat: data.fileFormat,
-    //       fileSize: data.fileSize,
-    //       previewImageName: data.previewImageName,
-    //     },
-    //   },
-    //   {
-    //     onSuccess: () => {
-    //       toast.success('Ресурс успішно оновлено.');
-    //       navigate(-1);
-    //     },
-    //   },
-    // );
+    updateResourceMutation.mutate(
+      {
+        resourceId,
+        data: {
+          title: data.title,
+          description: data.description,
+          citation: data.citation,
+          resourceTypeId: data.resourceType.id,
+          categoryId: data.category.id,
+          publicationDate: data.publicationDate,
+          authors: data.authors.map((author) => author.name) ?? [],
+          keywords: data.keywords ?? [],
+          additionalInfo: data.additionalInfo,
+          fileName: data.fileName as string,
+          fileFormat: data.fileFormat as string,
+          fileSize: data.fileSize as string,
+          previewImageName: data.previewImageName,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success('Ресурс успішно оновлено.');
+          navigate(-1);
+        },
+      },
+    );
   };
 
   return (
@@ -129,7 +131,7 @@ export function ResourceEditForm({ resourceId, initialData = {} }: ResourceEditF
             {currentStep === 1 && <AdditionalInfoForm />}
             {currentStep === 2 && <ResourceFileUploadForm />}
             {currentStep === 3 && <PreviewFileUploadForm />}
-            {currentStep === 4 && null}
+            {currentStep === 4 && <ReviewForm />}
 
             <div className="flex justify-between pt-4">
               <Button

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   HttpException,
   Injectable,
   NotFoundException,
@@ -48,6 +49,7 @@ export class ResourcesService {
         fileSize: createResourceDto.file_size,
         additionalInfo: createResourceDto.additional_info,
         resourceTypeId: createResourceDto.resource_type_id,
+        citation: createResourceDto.citation,
         uploadedByUserId: userId,
       };
 
@@ -139,8 +141,8 @@ export class ResourcesService {
         existingResource.uploaded_by_user_id !== user.userId &&
         user.role !== ROLES.admin
       ) {
-        throw new UnauthorizedException(
-          'You are not authorized to update this resource',
+        throw new ForbiddenException(
+          'You are not allowed to update this resource',
         );
       }
 
@@ -240,8 +242,8 @@ export class ResourcesService {
       if (!resource) throw new NotFoundException('Resource does not exist');
 
       if (resource.uploaded_by.id !== user.userId && user.role !== ROLES.admin)
-        throw new UnauthorizedException(
-          'You are not authorized to remove this resource',
+        throw new ForbiddenException(
+          'You are not allowed to delete this resource',
         );
 
       await this.minioService

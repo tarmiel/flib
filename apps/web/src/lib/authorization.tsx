@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Comment, User, type UserRole } from '@/types/api';
+import { Resource, User, type UserRole } from '@/types/api';
 
 import { useUser } from './auth';
 import type { ValueOf } from '@/types/utils';
@@ -14,12 +14,23 @@ export const ROLES = {
 type RoleTypes = ValueOf<typeof ROLES>;
 
 export const POLICIES = {
-  'comment:delete': (user: User, comment: Comment) => {
+  'resource:update': (user: User, resource: Resource) => {
     if (user.role === ROLES.ADMIN) {
       return true;
     }
 
-    if (user.role === ROLES.USER && comment.author?.id === user.id) {
+    if (user.role === ROLES.EDITOR && resource.uploadedBy.id === user.id) {
+      return true;
+    }
+
+    return false;
+  },
+  'resource:delete': (user: User, resource: Resource) => {
+    if (user.role === ROLES.ADMIN) {
+      return true;
+    }
+
+    if (user.role === ROLES.EDITOR && resource.uploadedBy.id === user.id) {
       return true;
     }
 

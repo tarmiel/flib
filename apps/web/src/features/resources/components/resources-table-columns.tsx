@@ -18,13 +18,16 @@ import {
 } from '@/components/ui/dropdown';
 import { Link } from '@/components/ui/link';
 import { APP_PATH } from '@/config/paths';
-import type { Resource } from '@/types/api';
+import type { Resource, User } from '@/types/api';
+import { Authorization, POLICIES } from '@/lib/authorization';
+import { useUser } from '@/lib/auth';
 
 interface GetColumnsProps {
   setRowAction: React.Dispatch<React.SetStateAction<DataTableRowAction<Resource> | null>>;
+  user: User;
 }
 
-export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<Resource>[] {
+export function getColumns({ setRowAction, user }: GetColumnsProps): ColumnDef<Resource>[] {
   return [
     {
       id: 'select',
@@ -136,24 +139,28 @@ export function getColumns({ setRowAction }: GetColumnsProps): ColumnDef<Resourc
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Опції</DropdownMenuLabel>
-              <DropdownMenuItem>
-                <Link
-                  to={APP_PATH.app.dashboard.editResource.getHref(resource.id)}
-                  className={'text-inherit'}
-                >
-                  Редагувати
-                </Link>
-              </DropdownMenuItem>
+              <Authorization policyCheck={POLICIES['resource:update'](user, resource)}>
+                <DropdownMenuItem>
+                  <Link
+                    to={APP_PATH.app.dashboard.editResource.getHref(resource.id)}
+                    className={'text-inherit'}
+                  >
+                    Редагувати
+                  </Link>
+                </DropdownMenuItem>
+              </Authorization>
               <DropdownMenuItem>
                 <Link to={APP_PATH.app.resource.getHref(resource.id)} className={'text-inherit'}>
                   Переглянути
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => setRowAction({ row, type: 'delete' })}>
-                Видалити
-                <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-              </DropdownMenuItem>
+              <Authorization policyCheck={POLICIES['resource:delete'](user, resource)}>
+                <DropdownMenuItem onSelect={() => setRowAction({ row, type: 'delete' })}>
+                  Видалити
+                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </Authorization>
             </DropdownMenuContent>
           </DropdownMenu>
         );

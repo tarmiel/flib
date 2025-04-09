@@ -243,11 +243,7 @@ export const UpdateProfile = () => {
                   >
                     Скасувати
                   </Button>
-                  <Button
-                    type="submit"
-                    onClick={() => console.log(formState)}
-                    isLoading={updateProfileMutation.isPending}
-                  >
+                  <Button type="submit" isLoading={updateProfileMutation.isPending}>
                     Зберегти зміни
                   </Button>
                 </div>
@@ -258,7 +254,9 @@ export const UpdateProfile = () => {
       </CardContent>
       {!isEditing && (
         <CardFooter>
-          <Button onClick={() => setIsEditing(true)}>Редагувати профіль</Button>
+          <Button type="button" onClick={() => setIsEditing(true)}>
+            Редагувати профіль
+          </Button>
         </CardFooter>
       )}
     </Card>

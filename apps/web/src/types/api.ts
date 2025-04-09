@@ -62,7 +62,8 @@ export type ResourceFileType = 'PDF' | 'DJVU';
 
 export type BaseResource = Entity<{
   title: string;
-  previewImageUrl?: string;
+  previewImageUrl?: string | null;
+  previewImageName?: string | null;
   fileName: string;
   fileFormat: ResourceFileType;
   fileSize?: string;

@@ -157,9 +157,23 @@ export const resourceFileUploadSchema = z.object({
 });
 
 export const resourcePreviewImageSchema = z.object({
-  previewImageName: z.string().optional(),
+  previewImageName: z.string().optional().nullable(),
   previewImageUrl: z.string().optional().nullable(),
 });
+
+export const authorRightsConfirmationSchema = z.object({
+  authorRightsConfirmation: z.boolean().refine((val) => val === true, {
+    message:
+      'Ви маєте підтвердити, що ви автор цього ресурсу або отримали дозвіл на його завантаження',
+  }),
+});
+
+export type AuthorRightsConfirmationFormData = z.infer<typeof authorRightsConfirmationSchema>;
+type AuthorRightsConfirmationSchemaKeys = keyof AuthorRightsConfirmationFormData;
+
+export const authorRightsConfirmationValidationKeys = Object.keys(
+  authorRightsConfirmationSchema.shape,
+) as AuthorRightsConfirmationSchemaKeys[];
 
 export type BaseInfoFormData = z.infer<typeof baseInfoSchema>;
 type BaseInfoSchemaKeys = keyof BaseInfoFormData;
@@ -218,6 +232,7 @@ export const resourceUploadSchema = z
     }),
   ])
   .and(resourceFileUploadSchema)
-  .and(resourcePreviewImageSchema);
+  .and(resourcePreviewImageSchema)
+  .and(authorRightsConfirmationSchema);
 
 export type ResourceUploadFormData = z.infer<typeof resourceUploadSchema>;

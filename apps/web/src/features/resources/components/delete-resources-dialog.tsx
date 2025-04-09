@@ -44,22 +44,25 @@ export function DeleteResourcesDialog({
             size="sm"
             icon={<Trash className="mr-2 size-4" aria-hidden="true" />}
           >
-            Delete ({resources.length})
+            Видалити ({resources.length})
           </Button>
         </DialogTrigger>
       ) : null}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>Ви абсолютно впевнені?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your{' '}
-            <span className="font-medium">{resources.length}</span>
-            {resources.length === 1 ? ' resource' : ' resources'} from our servers.
+            Цю дію не можна скасувати.
+            <br /> Це назавжди видалить (<span className="font-medium">
+              {resources.length}
+            </span>){' '}
+            {resources.length === 1 ? `ресурс` : resources.length < 5 ? 'ресурси' : 'ресурсів'} з
+            наших серверів.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:space-x-0">
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">Відмінити</Button>
           </DialogClose>
           <Button
             aria-label="Delete selected rows"
@@ -68,7 +71,7 @@ export function DeleteResourcesDialog({
             disabled={false}
             isLoading={false}
           >
-            Delete
+            Так, видалити
           </Button>
         </DialogFooter>
       </DialogContent>
