@@ -84,12 +84,16 @@ export const createAppRouter = (queryClient: QueryClient) =>
       children: [
         {
           index: true,
-          lazy: () => import('./routes/app/dashboard/dashboard').then(convert(queryClient)),
+          element: <Navigate to={APP_PATH.app.dashboard.resources.getHref()} replace />,
         },
-        {
-          path: APP_PATH.app.dashboard.stats.path,
-          lazy: () => import('./routes/app/dashboard/stats').then(convert(queryClient)),
-        },
+        // {
+        //   index: true,
+        //   lazy: () => import('./routes/app/dashboard/dashboard').then(convert(queryClient)),
+        // },
+        // {
+        //   path: APP_PATH.app.dashboard.stats.path,
+        //   lazy: () => import('./routes/app/dashboard/stats').then(convert(queryClient)),
+        // },
         {
           path: APP_PATH.app.dashboard.resources.path,
           lazy: () => import('./routes/app/dashboard/resources/page').then(convert(queryClient)),

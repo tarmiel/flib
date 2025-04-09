@@ -11,7 +11,7 @@ const RegisterRoute = () => {
   const redirectTo = searchParams.get('redirectTo');
 
   return (
-    <AuthLayout title="Register your account">
+    <AuthLayout title="Створіть аккаунт">
       <RegisterForm
         onSuccess={() => {
           navigate(`${APP_PATH.auth.login.getHref(redirectTo)}`, {

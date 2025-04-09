@@ -73,6 +73,7 @@ export default function EditResourceRoute() {
             fileFormat: resourceQuery.data.fileFormat,
             fileSize: resourceQuery.data.fileSize,
             previewImageUrl: resourceQuery.data.previewImageUrl,
+            previewImageName: resourceQuery.data.previewImageName,
             resourceTypeName: resourceQuery.data.resourceType.name,
           }}
         />
