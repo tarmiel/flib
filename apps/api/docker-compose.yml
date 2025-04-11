@@ -40,24 +40,6 @@ services:
     networks:
       - libhub-network
 
-  # appointments-api:
-  #   build: .
-  #   ports:
-  #     - '3000:3000'
-  #   depends_on:
-  #     postgres-db:
-  #       condition: service_healthy
-  #   environment:
-  #     DATABASE_URL: 'postgresql://postgres:postgres-password@postgres-db:5432/postgres?schema=public'
-
-  #     JWT_SECRET: <>
-  #     JWT_ACCESS_TOKEN_EXPIRES_IN: 86400
-  #     JWT_ISSUER: <>
-  #     JWT_AUDIENCE: <>
-
-  #   networks:
-  #     - appointments-network
-
 networks:
   libhub-network:
     driver: bridge

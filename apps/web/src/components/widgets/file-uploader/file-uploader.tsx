@@ -157,10 +157,12 @@ export function FileUploader(props: FileUploaderProps) {
         toast.promise(onUpload(updatedFiles), {
           loading: `Завантаження: ${target}...`,
           success: () => {
-            setFiles([]);
             return `${target} завантажено`;
           },
           error: `Не вдалося завантажити ${target}`,
+          finally: () => {
+            setFiles([]);
+          },
         });
       }
     },

@@ -5,7 +5,6 @@ import {
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { ResourceEntity } from './entities/resource.entity';

@@ -14,7 +14,7 @@ import { SavedResourcesModule } from './modules/saved-resources/saved-resources.
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
-          target: 'pino-pretty',
+          target: 'pino-pretty'
         },
       },
     }),

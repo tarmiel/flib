@@ -4,7 +4,6 @@ import {
   IsInt,
   IsDate,
   IsArray,
-  IsUrl,
   IsNotEmpty,
   ArrayMinSize,
   IsEnum,

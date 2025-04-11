@@ -12,16 +12,18 @@ import { AUTH_TYPE_KEY } from '../decorators/auth.decorator';
 @Injectable()
 export class AuthGuard implements CanActivate {
   private static readonly defaultAuthType = AUTH_TYPES.Jwt;
-
-  private readonly authTypeGuardMap = {
-    [AUTH_TYPES.Jwt]: this.jwtAuthGuard,
-    [AUTH_TYPES.None]: { canActivate: () => true },
-  };
+  private authTypeGuardMap: Record<string, CanActivate>;
 
   constructor(
     private readonly reflector: Reflector,
     private readonly jwtAuthGuard: JwtAuthGuard,
-  ) {}
+  ) {
+    // Initialize the map in the constructor after jwtAuthGuard is available
+    this.authTypeGuardMap = {
+      [AUTH_TYPES.Jwt]: this.jwtAuthGuard,
+      [AUTH_TYPES.None]: { canActivate: () => true },
+    };
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const authTypes = this.reflector.getAllAndOverride<
@@ -43,9 +45,8 @@ export class AuthGuard implements CanActivate {
       if (canActivate) {
         return true;
       }
-      throw error;
     }
 
-    return false;
+    throw error;
   }
 }

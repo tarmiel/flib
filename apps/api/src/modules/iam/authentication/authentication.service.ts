@@ -3,7 +3,7 @@ import {
   ConflictException,
   Injectable,
   ServiceUnavailableException,
-  UnauthorizedException,
+  HttpException,
 } from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { Logger } from 'nestjs-pino';
@@ -62,9 +62,9 @@ export class AuthenticationService {
     try {
       const { first_name, last_name, email, password } = registerUserDto;
 
-      const exisingUser = await this.usersService.findOne(email);
+      const existingUser = await this.usersService.findOne(email);
 
-      if (exisingUser)
+      if (existingUser)
         throw new ConflictException('User with such email already exists');
 
       const hashedPassword = await this.hashingService.hash(password);
@@ -88,8 +88,11 @@ export class AuthenticationService {
       };
     } catch (error) {
       this.logger.error(error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new BadRequestException(
-        error.message || 'Error while creating user',
+        error instanceof Error ? error.message : 'Error while creating user',
       );
     }
   }
