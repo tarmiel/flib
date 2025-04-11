@@ -4,7 +4,8 @@ RUN apk update
 WORKDIR /app
 RUN npm install -g turbo
 COPY . .
-RUN turbo prune api --docker
+RUN turbo prune web --docker
+
 
 FROM node:20-alpine AS installer
 RUN apk update
@@ -12,18 +13,25 @@ WORKDIR /app
 COPY --from=builder /app/out/json/ ./
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 COPY --from=builder /app/turbo.json ./turbo.json
-COPY --from=builder /app/apps/api/prisma ./prisma
 RUN npm ci
-RUN npx prisma generate
+
 
 FROM node:20-alpine AS sourcer
 WORKDIR /app
+ARG VITE_APP_API_URL
+ENV VITE_APP_API_URL $VITE_APP_API_URL
 COPY --from=installer /app/ ./
 COPY --from=builder /app/out/full/ ./
 COPY .gitignore .gitignore
-RUN npm run build --workspace=api
+RUN npm run build --workspace=web
 
-FROM node:20-alpine as runner
+
+FROM node:20-alpine AS runner
 WORKDIR /app
-COPY --from=sourcer /app/ .
-CMD [ "node", "apps/api/dist/main.js" ]
+
+RUN npm install -g serve
+COPY --from=sourcer /app/apps/web/dist ./dist
+
+EXPOSE 3000
+
+CMD ["serve", "-s", "dist", "-l", "3000"]
