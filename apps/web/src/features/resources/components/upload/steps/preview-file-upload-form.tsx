@@ -60,7 +60,7 @@ const ImagePreview = ({ name, url, onDelete }: ImagePreviewProps) => {
       <img
         src={url}
         alt={name || 'Зображення'}
-        className="w-full h-auto rounded-lg shadow-md object-cover aspect-[3/4]"
+        className="w-full h-auto rounded-lg shadow-md object-contain aspect-[3/4]"
         onError={({ currentTarget }) => {
           currentTarget.onerror = null;
           currentTarget.src = '/placeholder.svg';

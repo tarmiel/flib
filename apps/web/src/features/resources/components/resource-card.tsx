@@ -34,7 +34,7 @@ export const ResourceCard = ({
             <img
               src={resource.previewImageUrl || '/placeholder.svg'}
               alt={resource.title}
-              className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+              className="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null;
                 currentTarget.src = '/placeholder.svg';
@@ -92,7 +92,7 @@ export const ResourceCard = ({
           <img
             src={resource.previewImageUrl || '/placeholder.svg'}
             alt={resource.title}
-            className="object-cover h-full"
+            className="object-contain h-full"
             onError={({ currentTarget }) => {
               currentTarget.onerror = null;
               currentTarget.src = '/placeholder.svg';

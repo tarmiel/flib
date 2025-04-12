@@ -74,7 +74,7 @@ export function ResourceDetail({ resource }: ResourceDetailProps) {
             <img
               src={resource.previewImageUrl || '/placeholder.svg'}
               alt={resource.title}
-              className="object-cover h-full w-full"
+              className="object-contain h-full w-full"
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null;
                 currentTarget.src = '/placeholder.svg';
