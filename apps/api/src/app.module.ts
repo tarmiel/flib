@@ -8,13 +8,14 @@ import { ResourceTypesModule } from './modules/resource_types/resource_types.mod
 import { CategoriesModule } from './modules/categories/categories.module';
 import { FilesUploadModule } from './modules/files-upload/files-upload.module';
 import { SavedResourcesModule } from './modules/saved-resources/saved-resources.module';
+import { InitializeModule } from './modules/initialize/initialize.module';
 
 @Module({
   imports: [
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
-          target: 'pino-pretty'
+          target: 'pino-pretty',
         },
       },
     }),
@@ -26,6 +27,7 @@ import { SavedResourcesModule } from './modules/saved-resources/saved-resources.
     CategoriesModule,
     FilesUploadModule,
     SavedResourcesModule,
+    InitializeModule,
   ],
   controllers: [],
 })
