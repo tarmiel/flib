@@ -35,14 +35,16 @@ export class MinioService {
     uploadId: string,
     partNumber: number,
     expiry: number = 3600,
-  ): Promise<string> {
-    return this.minioClient.presignedUrl(
+  ) {
+    const presignedUrl = await this.minioClient.presignedUrl(
       'PUT',
       bucketName,
       objectName,
       expiry,
       { partNumber: partNumber.toString(), uploadId: uploadId },
     );
+
+    return this.rewriteMinioUrl(presignedUrl);
   }
 
   async completeMultipartUpload(
@@ -64,7 +66,13 @@ export class MinioService {
     objectName: string,
     expires?: number,
   ): Promise<string> {
-    return this.minioClient.presignedGetObject(bucketName, objectName, expires);
+    const url = await this.minioClient.presignedGetObject(
+      bucketName,
+      objectName,
+      expires,
+    );
+
+    return this.rewriteMinioUrl(url);
   }
 
   async removeObject(bucketName: string, objectName: string): Promise<void> {
@@ -86,5 +94,13 @@ export class MinioService {
     if (!exists) {
       await this.minioClient.makeBucket(bucketName);
     }
+  }
+
+  private rewriteMinioUrl(url: string) {
+    const urlObj = new URL(url);
+    // urlObj.protocol = 'http';
+    // urlObj.host = this.configService.get('APP_HOST')!;
+    // urlObj.pathname = `/storage${urlObj.pathname}`;
+    return `/storage${urlObj.pathname}${urlObj.search}`;
   }
 }
