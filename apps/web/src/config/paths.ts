@@ -34,14 +34,6 @@ export const APP_PATH = {
       path: 'resources/saved',
       getHref: () => `/app/resources/saved`,
     },
-    discussions: {
-      path: 'discussions',
-      getHref: () => '/app/discussions',
-    },
-    discussion: {
-      path: 'discussions/:discussionId',
-      getHref: (id: string | number) => `/app/discussions/${id}`,
-    },
     users: {
       path: 'users',
       getHref: () => '/app/users',

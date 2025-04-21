@@ -6,7 +6,7 @@ const BrowseRoute = () => {
     <>
       <Head title={'Browse'} />
       <div className="py-3 md:py-6">
-        <h1 className="text-xl md:text-3xl font-bold tracking-tight mb-6">Перегляд матеріалів</h1>
+        <h1 className="text-xl md:text-3xl font-bold tracking-tight mb-6">Каталог матеріалів</h1>
         <ResourcesSearchSection />
         <ResourcesSearchResults />
       </div>

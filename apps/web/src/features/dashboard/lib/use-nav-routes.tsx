@@ -15,11 +15,6 @@ export const useNavRoutes = () => {
   const { checkAccess } = useAuthorization();
   const navRoutes = useMemo(() => {
     return [
-      checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
-        name: 'Панель керування',
-        path: APP_PATH.app.dashboard.stats.getHref(),
-        Icon: BarChart3,
-      },
       checkAccess({ allowedRoles: [ROLES.ADMIN, ROLES.EDITOR] }) && {
         name: 'Додати ресурс',
         path: APP_PATH.app.dashboard.uploadResource.getHref(),
