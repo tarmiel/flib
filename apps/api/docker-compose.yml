@@ -1,7 +1,7 @@
 services:
   postgres-db:
     image: postgres:latest
-    restart: always
+    restart: unless-stopped
     ports:
       - '5432:5432'
     environment:
@@ -21,7 +21,7 @@ services:
 
   minio-server:
     image: minio/minio:latest
-    restart: always
+    restart: unless-stopped
     ports:
       - '9000:9000'
       - '9001:9001'
