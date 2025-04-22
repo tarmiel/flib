@@ -1,7 +1,7 @@
 services:
   postgres-db:
     image: postgres:latest
-    restart: unless-stopped
+    restart: always
     ports:
       - '5432:5432'
     environment:
@@ -54,15 +54,14 @@ services:
     environment:
       DATABASE_URL: 'postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db:5432/${POSTGRES_DB}?schema=public'
       MINIO_ENDPOINT: ${MINIO_ENDPOINT}
-      MINIO_PORT: 9000
+      MINIO_PORT: ${MINIO_PORT}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_FILES_BUCKET_NAME: ${MINIO_FILES_BUCKET_NAME}
-      JWT_SECRET: <>
-      JWT_ACCESS_TOKEN_EXPIRES_IN: 86400
+      JWT_SECRET: ${ JWT_SECRET }
+      JWT_ACCESS_TOKEN_EXPIRES_IN: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-
     networks:
       - libhub-network
 
