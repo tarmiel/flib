@@ -1,2 +1,4 @@
 node_modules
 .vscode
+minio_data
+postgres_data

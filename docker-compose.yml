@@ -44,6 +44,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
+    # image: verol/libhub:api
     ports:
       - '3002:3002'
     depends_on:
@@ -58,7 +59,7 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_FILES_BUCKET_NAME: ${MINIO_FILES_BUCKET_NAME}
-      JWT_SECRET: ${ JWT_SECRET }
+      JWT_SECRET: ${JWT_SECRET}
       JWT_ACCESS_TOKEN_EXPIRES_IN: ${JWT_ACCESS_TOKEN_EXPIRES_IN}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
@@ -71,6 +72,7 @@ services:
       dockerfile: ./apps/web/Dockerfile
       args:
         - VITE_APP_API_URL=${VITE_APP_API_URL}
+    # image: verol/libhub:web
     ports:
       - '3000:3000'
     environment:

@@ -2,3 +2,5 @@ node_modules
 dist
 coverage
 .vscode
+minio_data
+postgres_data
